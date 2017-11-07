@@ -47,47 +47,49 @@ module polyline(points, width = 1, decay = 0.1) {
 }
 
 
-function divide(points, divisions) = floor(len(points)/(divisions+1));
+function divide(points, divisions) = floor(len(points)/(divisions));
 
-module tree() {
 
-  t_step = .01; 
-  width = 50;
+module tree(height = 600, trunk = 50, bushiness = 300, depth = 3, seed = 5, 
+  decay = 0.7, step = 0.01) {
 
   p0 = [0, 0];
-  p1 = [-200, 300];
-  p2 = [10, 400];
-  p3 = [0, 590];
-
-  divisions = 5;
+  p1 = [rands(-bushiness, bushiness, 1, seed)[0], rands(p0[1], height/2, 1, seed+1)[0]]; 
+  p2 = [rands(-bushiness, bushiness, 1, seed+2)[0], 
+	rands(p1[1], height/2*2, 1, seed+3)[0]];
+  p3 = [rands(-bushiness, bushiness, 1, seed+4)[0],
+        height];
 
   pArray = [p0, p1, p2, p3];
 
-  points = bezier_curve(t_step, 
+  points = bezier_curve(step, 
       p0, p1, p2, p3
   );
 
 
-  for (i=[0:divisions]) {
-    echo(i*divide(points, divisions));
+  for (i=[0:depth]) {
     if (i > 0) {
       color("blue")
-        translate(points[i*divide(points, divisions)])
-        rotate([0, 0, 20])
-          polyline(points, width*.5, decay = .7);
+        translate(points[i*divide(points, depth)])
+        rotate([0, 0, round(rands(-1, 1, 1, seed+3*i)[0])*rands(20, 70, i, seed+i)[0]])
+          //polyline(points, trunk*.5, decay = .7);
+          tree(height = height*decay, truk = trunk * decay, 
+              bushiness = bushiness * decay, depth = depth - 1, seed = seed + i,
+              decay = decay, setp = step);
     }
   }
 
-  polyline(points, width, decay = .7);
+  polyline(points, trunk, decay = .7);
 
   
 
-
+/*
   for (i=pArray) {
     color("red")
     translate(i)
-      cube(width, center = true);
+      cube(trunk, center = true);
   }
+*/
 }
 
-tree();
+tree(seed=33, bushiness = 300, depth = 3);
