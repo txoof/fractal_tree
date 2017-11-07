@@ -51,12 +51,21 @@ t_step = .01;
 width = 50;
 
 p0 = [0, 0];
-p1 = [-49, 300];
-p2 = [200, 400];
+p1 = [-200, 300];
+p2 = [10, 400];
 p3 = [0, 590];
+
+pArray = [p0, p1, p2, p3];
 
 points = bezier_curve(t_step, 
     p0, p1, p2, p3
 );
 
 polyline(points, width, decay = .7);
+
+for (i=pArray) {
+  color("red")
+  translate(i)
+    cube(width, center = true);
+}
+
