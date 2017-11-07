@@ -36,7 +36,6 @@ module line(point1, point2, width = 1, cap_round = true) {
 }
 
 module polyline(points, width = 1, decay = 0.1) {
-  echo("points", len(points));
   module polyline_inner(points, index) {
       if(index < len(points)) {
           line(points[index - 1], points[index], width-width*(index/len(points))*decay);
@@ -47,25 +46,48 @@ module polyline(points, width = 1, decay = 0.1) {
   polyline_inner(points, 1);
 }
 
-t_step = .01; 
-width = 50;
 
-p0 = [0, 0];
-p1 = [-200, 300];
-p2 = [10, 400];
-p3 = [0, 590];
+function divide(points, divisions) = floor(len(points)/(divisions+1));
 
-pArray = [p0, p1, p2, p3];
+module tree() {
 
-points = bezier_curve(t_step, 
-    p0, p1, p2, p3
-);
+  t_step = .01; 
+  width = 50;
 
-polyline(points, width, decay = .7);
+  p0 = [0, 0];
+  p1 = [-200, 300];
+  p2 = [10, 400];
+  p3 = [0, 590];
 
-for (i=pArray) {
-  color("red")
-  translate(i)
-    cube(width, center = true);
+  divisions = 5;
+
+  pArray = [p0, p1, p2, p3];
+
+  points = bezier_curve(t_step, 
+      p0, p1, p2, p3
+  );
+
+
+  for (i=[0:divisions]) {
+    echo(i*divide(points, divisions));
+    if (i > 0) {
+      color("blue")
+        translate(points[i*divide(points, divisions)])
+        rotate([0, 0, 20])
+          polyline(points, width*.5, decay = .7);
+    }
+  }
+
+  polyline(points, width, decay = .7);
+
+  
+
+
+  for (i=pArray) {
+    color("red")
+    translate(i)
+      cube(width, center = true);
+  }
 }
 
+tree();
