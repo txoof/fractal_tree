@@ -1,3 +1,4 @@
+//https://openhome.cc/eGossip/OpenSCAD/BezierCurve.html
 function bezier_coordinate(t, n0, n1, n2, n3) = 
     n0 * pow((1 - t), 3) + 3 * n1 * t * pow((1 - t), 2) + 
         3 * n2 * pow(t, 2) * (1 - t) + n3 * pow(t, 3);
