@@ -47,8 +47,16 @@ module polylineX(points, width = 1, decay = 0.1) {
 }
 
 
-module polyline(points, width = 1, decay = 0.1) {
+module polyline(points, botWidth = 40, topWidth = 20) {
   module polyline_inner(points, index) {
+    //width = botWidth*(len(points)-index+1)/len(points)*widthDecay;
+    //endwidth=widthDecay*botWidth;
+    //width = endwidth+(len(points)-(index-1))/len(points)*(botWidth-endwidth);
+    //width = botWidth+(index-1)/len(points)*((widthDecay*botWidth)-botWidth);
+    //width = ((index-1)/len(points))*topWidth;
+    width = botWidth - (botWidth-topWidth)*(index-1)/len(points);
+
+    echo(index, width);
     if (index < len(points)) {
       line(points[index -1], points[index], width);
       polyline_inner(points, index + 1);
@@ -63,8 +71,8 @@ function divide(points, divisions) = floor(len(points)/(divisions));
 //module tree(height = 600, trunk = 50, bend = 300, depth = 3, seed = 5, 
 //  decay = 0.7, step = 0.01) {
 
-module tree(seed = 55, height = 500, step = 0.01) {
-  bend = 50;
+module tree(seed = 55, height = 300, step = 0.01, bend = 75, maxWidth = 40, 
+            minWidth = 30, decay =  0.2) {
   p0 = [0, 0];
   p1 = [rands(-bend, bend, 1, seed)[0], rands(p0[1], height/2, 1, seed+1)[0]]; 
   p2 = [rands(-bend, bend, 1, seed+2)[0], 
@@ -77,8 +85,9 @@ module tree(seed = 55, height = 500, step = 0.01) {
   points = bezier_curve(step, 
       p0, p1, p2, p3
   );
+  
 
-  polyline(points, 10);
+  polyline(points, 40, 20);
 
   
 
@@ -86,9 +95,9 @@ module tree(seed = 55, height = 500, step = 0.01) {
   for (i=pArray) {
     color("red")
     translate(i)
-      square(20, center = true);
+      square(10, center = true);
   }
 
 }
 
-tree(seed=55);
+tree(seed=99);
