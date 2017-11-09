@@ -107,4 +107,4 @@ module tree(seed = 55, height = 300, step = 0.01, depth = 3, bend = 75,
 
 }
 
-tree(seed=99);
+tree(seed=27, bend = 30);
