@@ -82,13 +82,13 @@ module tree(seed = 55, height = 500, step = 0.01) {
 
   
 
-/*
+
   for (i=pArray) {
     color("red")
     translate(i)
-      cube(trunk, center = true);
+      square(20, center = true);
   }
-*/
+
 }
 
 tree(seed=55);
