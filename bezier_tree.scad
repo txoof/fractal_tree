@@ -71,8 +71,13 @@ function divide(points, divisions) = floor(len(points)/(divisions));
 //module tree(height = 600, trunk = 50, bend = 300, depth = 3, seed = 5, 
 //  decay = 0.7, step = 0.01) {
 
-module tree(seed = 55, height = 300, step = 0.01, bend = 75, maxWidth = 40, 
-            minWidth = 30, decay =  0.2) {
+module tree(seed = 55, height = 300, step = 0.01, depth = 3, bend = 75, 
+            widthBottom = .3,
+            widthTop = .2, 
+            minGrowth = 0.8,
+            maxGrowth = 1.2,
+            ) {
+
   p0 = [0, 0];
   p1 = [rands(-bend, bend, 1, seed)[0], rands(p0[1], height/2, 1, seed+1)[0]]; 
   p2 = [rands(-bend, bend, 1, seed+2)[0], 
@@ -86,6 +91,8 @@ module tree(seed = 55, height = 300, step = 0.01, bend = 75, maxWidth = 40,
       p0, p1, p2, p3
   );
   
+
+
 
   polyline(points, 40, 20);
 
