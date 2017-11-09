@@ -35,7 +35,7 @@ module line(point1, point2, width = 1, cap_round = true) {
     ]);
 }
 
-module polyline(points, width = 1, decay = 0.1) {
+module polylineX(points, width = 1, decay = 0.1) {
   module polyline_inner(points, index) {
       if(index < len(points)) {
           line(points[index - 1], points[index], width-width*(index/len(points))*decay);
@@ -47,17 +47,29 @@ module polyline(points, width = 1, decay = 0.1) {
 }
 
 
+module polyline(points, width = 1, decay = 0.1) {
+  module polyline_inner(points, index) {
+    if (index < len(points)) {
+      line(points[index -1], points[index], width);
+      polyline_inner(points, index + 1);
+    }
+  }
+  polyline_inner(points, 1);
+}
+
 function divide(points, divisions) = floor(len(points)/(divisions));
 
 
-module tree(height = 600, trunk = 50, bushiness = 300, depth = 3, seed = 5, 
-  decay = 0.7, step = 0.01) {
+//module tree(height = 600, trunk = 50, bend = 300, depth = 3, seed = 5, 
+//  decay = 0.7, step = 0.01) {
 
+module tree(seed = 55, height = 500, step = 0.01) {
+  bend = 50;
   p0 = [0, 0];
-  p1 = [rands(-bushiness, bushiness, 1, seed)[0], rands(p0[1], height/2, 1, seed+1)[0]]; 
-  p2 = [rands(-bushiness, bushiness, 1, seed+2)[0], 
+  p1 = [rands(-bend, bend, 1, seed)[0], rands(p0[1], height/2, 1, seed+1)[0]]; 
+  p2 = [rands(-bend, bend, 1, seed+2)[0], 
 	rands(p1[1], height/2*2, 1, seed+3)[0]];
-  p3 = [rands(-bushiness, bushiness, 1, seed+4)[0],
+  p3 = [rands(-bend, bend, 1, seed+4)[0],
         height];
 
   pArray = [p0, p1, p2, p3];
@@ -66,20 +78,7 @@ module tree(height = 600, trunk = 50, bushiness = 300, depth = 3, seed = 5,
       p0, p1, p2, p3
   );
 
-
-  for (i=[0:depth]) {
-    if (i > 0) {
-      color("blue")
-        translate(points[i*divide(points, depth)])
-        rotate([0, 0, round(rands(-1, 1, 1, seed+3*i)[0])*rands(20, 70, i, seed+i)[0]])
-          //polyline(points, trunk*.5, decay = .7);
-          tree(height = height*decay, truk = trunk * decay, 
-              bushiness = bushiness * decay, depth = depth - 1, seed = seed + i,
-              decay = decay, setp = step);
-    }
-  }
-
-  polyline(points, trunk, decay = .7);
+  polyline(points, 10);
 
   
 
@@ -92,4 +91,4 @@ module tree(height = 600, trunk = 50, bushiness = 300, depth = 3, seed = 5,
 */
 }
 
-tree(seed=33, bushiness = 300, depth = 3);
+tree(seed=55);
