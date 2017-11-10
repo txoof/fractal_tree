@@ -35,28 +35,11 @@ module line(point1, point2, width = 1, cap_round = true) {
     ]);
 }
 
-module polylineX(points, width = 1, decay = 0.1) {
+module polyline(points, startWidth = 40, endWidth = 20) {
   module polyline_inner(points, index) {
-      if(index < len(points)) {
-          line(points[index - 1], points[index], width-width*(index/len(points))*decay);
-          polyline_inner(points, index + 1);
-      }
-  }
+   //change the width with respect to the start and end
+   width = startWidth - (startWidth-endWidth)*(index-1)/len(points);
 
-  polyline_inner(points, 1);
-}
-
-
-module polyline(points, botWidth = 40, topWidth = 20) {
-  module polyline_inner(points, index) {
-    //width = botWidth*(len(points)-index+1)/len(points)*widthDecay;
-    //endwidth=widthDecay*botWidth;
-    //width = endwidth+(len(points)-(index-1))/len(points)*(botWidth-endwidth);
-    //width = botWidth+(index-1)/len(points)*((widthDecay*botWidth)-botWidth);
-    //width = ((index-1)/len(points))*topWidth;
-    width = botWidth - (botWidth-topWidth)*(index-1)/len(points);
-
-    echo(index, width);
     if (index < len(points)) {
       line(points[index -1], points[index], width);
       polyline_inner(points, index + 1);
@@ -91,13 +74,7 @@ module tree(seed = 55, height = 300, step = 0.01, depth = 3, bend = 75,
       p0, p1, p2, p3
   );
   
-
-
-
   polyline(points, 40, 20);
-
-  
-
 
   for (i=pArray) {
     color("red")
