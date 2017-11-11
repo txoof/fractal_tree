@@ -63,7 +63,7 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
   sizemod = rands(minGrowth, maxGrowth, 3, seed+4);
   mySize = sizemod[0]*size;
 
-  p0 = start;
+  p0 = [0,0];
   p1 = [rands(-bend, bend, 1, seed)[0], 
         rands(p0[1]+mySize/6, p0[1]+mySize/6*3, 1, seed+1)[0]]; 
   p2 = [rands(-bend, bend, 1, seed+2)[0], 
@@ -91,10 +91,16 @@ polyline(points);
 */
   
   rot = rands(-angle, angle, 1, seed+4)[0];
-  trans = [p3[0]-p3[1]*cos(90-rot), p3[1]*sin(90-rot), 0];
 
+  tip = [start[0]+p3[0]-p3[1]*cos(90-rot), start[1]+p3[1]*sin(90-rot), 0];
 
-  //rotate([0, 0, rot])
+  translate(tip)
+  color("yellow")
+  square(100, center = true);
+
+  //translate([start[0]-p3[1]*cos(90-rot), start[1]*sin(90-rot), 0])
+  translate(start)
+  rotate([0, 0, rot])
   polyline(points, widthBottom, widthTop);
 
   // draw control points for debugging
@@ -113,7 +119,8 @@ polyline(points);
     trunk(size = mySize*decay, depth = depth - 1, bend = bend*decay, seed = seed + 5, 
           widthBottom = widthTop, widthTop = widthTop*decay, 
           minGrowth = minGrowth, maxGrowth = maxGrowth, decay = decay, 
-          step = step, start = p3, control = control);
+          step = step, start = tip, 
+          control = control);
   }
   
 }
@@ -135,6 +142,6 @@ module trunk(size = 300, depth = 3, seed = 55, widthBottom = 75, widthTop = 45,
 
 }
 
-trunk(size = 500, seed = 8, bend = 50, control = true, depth = 5, decay = .8,
+trunk(size = 500, seed = 55, bend = 50, control = true, depth = 5, decay = .8,
       widthBottom = 100, widthTop = 50);
 
