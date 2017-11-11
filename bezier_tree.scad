@@ -62,16 +62,10 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
   mySize = sizemod[0]*size;
 
   p0 = start;
-
-  //p1 is in interval len/6:len*3/6
   p1 = [rands(-bend, bend, 1, seed)[0], 
         rands(p0[1]+mySize/6, p0[1]+mySize/6*3, 1, seed+1)[0]]; 
-  
-  //p2 is in interval len*3/6:len*5/6 
   p2 = [rands(-bend, bend, 1, seed+2)[0], 
 	rands(p0[1]+mySize/6*3, p0[1]+mySize/6*5, 1, seed+3)[0]];
-  
-  
   p3 = [rands(-bend, bend, 1, seed+4)[0],
         p0[1]+mySize];
 
@@ -79,6 +73,7 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
 
   points = bezier_curve(step, p0, p1, p2, p3);
 
+  echo("depth:", depth, widthBottom, widthTop);
   polyline(points, widthBottom, widthTop);
 
   // draw control points for debugging
@@ -91,37 +86,21 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
   }
 
 
-    if (depth > 0) {
-      trunk(size = mySize*decay, depth = depth - 1, bend = bend*decay, seed = seed + 5, 
-            widthBottom = widthTop, widthTop = widthBottom*decay, 
-            minGrowth = minGrowth, maxGrowth = maxGrowth, decay = decay, 
-            step = step, start = p3, control = control);
-    }
+  
+
+  if (depth > 0) {
+    trunk(size = mySize*decay, depth = depth - 1, bend = bend*decay, seed = seed + 5, 
+          widthBottom = widthTop, widthTop = widthTop*decay, 
+          minGrowth = minGrowth, maxGrowth = maxGrowth, decay = decay, 
+          step = step, start = p3, control = control);
+  }
   
 }
 
-//module trunk(size = 300, depth = 3, seed = 55, widthBottom = 0.25, widthTop = 0.15,
-//            minGrowth = 0.8, maxGrowth = 1.2, step = 0.01, start = [0,0], 
-//            control = false) {
 
 module trunk(size = 300, depth = 3, seed = 55, widthBottom = 75, widthTop = 45, 
             minGrowth = 0.8, maxGrowth = 1.2, , decay = 0.9, 
             step = 0.01, start = [0,0], control = true) {
-
-  /*
-  p0 = start;
-  p1 = [rands(-bend, bend, 1, seed)[0], rands(p0[1], size/2, 1, seed+1)[0]]; 
-  p2 = [rands(-bend, bend, 1, seed+2)[0], 
-	rands(p1[1], size/2*2, 1, seed+3)[0]];
-  p3 = [rands(-bend, bend, 1, seed+4)[0],
-        size];
-
-  //calculate the points along the bezier curve
-  points = bezier_curve(step, p0, p1, p2, p3 );
-  
-  //draw a branch
-  polyline(points, size*widthBottom, size*widthTop);
-  */
 
   //select the type of branch
   branchType = rands(0, 100, 1, seed+5)[0];
@@ -135,4 +114,5 @@ module trunk(size = 300, depth = 3, seed = 55, widthBottom = 75, widthTop = 45,
 
 }
 
-trunk(size = 500, seed = 4, bend = 50, control = true, depth = 5, decay = .9);
+trunk(size = 500, seed = 4, bend = 50, control = true, depth = 5, decay = .7,
+      widthBottom = 100, widthTop = 50);
