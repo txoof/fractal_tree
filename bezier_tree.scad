@@ -55,13 +55,18 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 
 
 module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth,
-                  maxGrowth, step, start) {
+                  maxGrowth, step, start, control) {
+ 
   p0 = start;
-  p1 = [rands(-bend, bend, 1, seed)[0], rands(p0[1], size/2, 1, seed+1)[0]]; 
+
+  translate(p0)
+    color("green")
+    square(100, center = true);
+  p1 = [rands(-bend, bend, 1, seed)[0], rands(p0[1], p0[1]+size/2, 1, seed+1)[0]]; 
   p2 = [rands(-bend, bend, 1, seed+2)[0], 
-	rands(p1[1], size/2*2, 1, seed+3)[0]];
+	rands(p1[1], p0[1]+size/2*2, 1, seed+3)[0]];
   p3 = [rands(-bend, bend, 1, seed+4)[0],
-        size];
+        p0[1]+size];
 
   pArray = [p0, p1, p2, p3];
 
@@ -69,12 +74,29 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
 
   polyline(points, size*widthBottom, size*widthTop);
 
+  // draw control points for debugging
+  if (control) {
+    for (i=pArray) {
+      translate(i)
+        color("red")
+        square(size*.05, center = true);
+    }
+  }
 
+
+  sizemod = 1;
+  echo("depth:", depth, "start:", p3);
+    if (depth > 0) {
+      trunk(size = size*.9, depth = depth - 1, bend = bend*.9, seed = seed + 5, 
+            widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth,
+            maxGrowth = maxGrowth, step = step, start = p3, control = control);
+    }
   
 }
 
 module trunk(size = 300, depth = 3, seed = 55, widthBottom = 0.25, widthTop = 0.15,
-            minGrowth = 0.8, maxGrowth = 1.2, step = 0.01, start = [0,0]) {
+            minGrowth = 0.8, maxGrowth = 1.2, step = 0.01, start = [0,0], 
+            control = false) {
 
   /*
   p0 = start;
@@ -95,11 +117,11 @@ module trunk(size = 300, depth = 3, seed = 55, widthBottom = 0.25, widthTop = 0.
   branchType = rands(0, 100, 1, seed+5)[0];
 
   if (0 < branchType && branchType < 100) {
-    branch_one(size = size*.9, depth = depth, bend = bend, seed = seed+6, 
+    branch_one(size = size, depth = depth, bend = bend, seed = seed+6, 
               widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
-              maxGrowth = maxGrowth, step = 0.01, start = start);
+              maxGrowth = maxGrowth, step = 0.01, start = start, control = control);
   }
 
 }
 
-trunk(size = 500, seed = 32, bend = 100);
+trunk(size = 500, seed = 4, bend = 200, control = true, depth = 5);
