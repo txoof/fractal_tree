@@ -48,8 +48,6 @@ module polyline(points, startWidth = 40, endWidth = 20) {
   polyline_inner(points, 1);
 }
 
-function divide(points, divisions) = floor(len(points)/(divisions));
-
 
 //module tree(height = 600, trunk = 50, bend = 300, depth = 3, seed = 5, 
 //  decay = 0.7, step = 0.01) {
