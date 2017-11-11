@@ -49,22 +49,27 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 }
 
 
-//module tree(height = 600, trunk = 50, bend = 300, depth = 3, seed = 5, 
+//module tree(size = 600, trunk = 50, bend = 300, depth = 3, seed = 5, 
 //  decay = 0.7, step = 0.01) {
 
-module trunk(seed = 55, height = 300, step = 0.01, depth = 3, bend = 75, 
+
+/*
+module trunk(seed = 55, size = 300, step = 0.01, depth = 3, bend = 75, 
             widthBottom = .3,
             widthTop = .2, 
             minGrowth = 0.8,
             maxGrowth = 1.2,
+*/
+module trunk(size = 300, depth = 3, seed = 55, widthBottom = 0.25, widthTop = 0.18,
+            minGrowth = 0.8, maxGrowth = 1.2, step = 0.01
             ) {
 
   p0 = [0, 0];
-  p1 = [rands(-bend, bend, 1, seed)[0], rands(p0[1], height/2, 1, seed+1)[0]]; 
+  p1 = [rands(-bend, bend, 1, seed)[0], rands(p0[1], size/2, 1, seed+1)[0]]; 
   p2 = [rands(-bend, bend, 1, seed+2)[0], 
-	rands(p1[1], height/2*2, 1, seed+3)[0]];
+	rands(p1[1], size/2*2, 1, seed+3)[0]];
   p3 = [rands(-bend, bend, 1, seed+4)[0],
-        height];
+        size];
 
   pArray = [p0, p1, p2, p3];
 
@@ -74,6 +79,8 @@ module trunk(seed = 55, height = 300, step = 0.01, depth = 3, bend = 75,
   
   polyline(points, 40, 20);
 
+  
+
   for (i=pArray) {
     color("red")
     translate(i)
@@ -82,4 +89,4 @@ module trunk(seed = 55, height = 300, step = 0.01, depth = 3, bend = 75,
 
 }
 
-trunk(seed=27, bend = 30);
+trunk(seed=27, bend = 45);
