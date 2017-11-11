@@ -75,40 +75,26 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
 
   points = bezier_curve(step, p0, p1, p2, p3);
 
-/*
-p0 = [0, 0];
-p1 = [-100, 200];
-p2 = [34, 450];
-p3 = [-75, 800];
-
-points = bezier_curve(0.01, p0, p1, p2, p3);
-
-rotate([0, 0, 15])
-polyline(points);
-translate([p3[0]-p3[1]*cos(90-15), p3[1]*sin(90-15), 0])
-rotate([0, 0, -15])
-polyline(points);
-*/
-  
   rot = rands(-angle, angle, 1, seed+4)[0];
 
   tip = [start[0]+p3[0]-p3[1]*cos(90-rot), start[1]+p3[1]*sin(90-rot), 0];
 
   translate(tip)
-  color("yellow")
-  square(100, center = true);
+    color("yellow")
+    square(2*widthTop, center = true);
 
-  //translate([start[0]-p3[1]*cos(90-rot), start[1]*sin(90-rot), 0])
-  translate(start)
-  rotate([0, 0, rot])
-  polyline(points, widthBottom, widthTop);
+  // move to the starting point (previous tip)
+  translate(start) {
+    rotate([0, 0, rot])
+    polyline(points, widthBottom, widthTop);
 
-  // draw control points for debugging
-  if (control) {
-    for (i=pArray) {
-      translate(i)
-        color("red")
-        square(size*.05, center = true);
+    // draw control points for debugging
+    if (control) {
+      for (i=pArray) {
+        translate(i)
+          color("red")
+          square(size*.05, center = true);
+      }
     }
   }
 
