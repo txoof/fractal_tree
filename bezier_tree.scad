@@ -56,23 +56,30 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 
 module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth,
                   maxGrowth, step, start, control) {
- 
+
+
+  sizemod = rands(minGrowth, maxGrowth, 3, seed+4);
+  mySize = sizemod[0]*size;
+
   p0 = start;
 
-  translate(p0)
-    color("green")
-    square(100, center = true);
-  p1 = [rands(-bend, bend, 1, seed)[0], rands(p0[1], p0[1]+size/2, 1, seed+1)[0]]; 
+  //p1 is in interval len/6:len*3/6
+  p1 = [rands(-bend, bend, 1, seed)[0], 
+        rands(p0[1]+mySize/6, p0[1]+mySize/6*3, 1, seed+1)[0]]; 
+  
+  //p2 is in interval len*3/6:len*5/6 
   p2 = [rands(-bend, bend, 1, seed+2)[0], 
-	rands(p1[1], p0[1]+size/2*2, 1, seed+3)[0]];
+	rands(p0[1]+mySize/6*3, p0[1]+mySize/6*5, 1, seed+3)[0]];
+  
+  
   p3 = [rands(-bend, bend, 1, seed+4)[0],
-        p0[1]+size];
+        p0[1]+mySize];
 
   pArray = [p0, p1, p2, p3];
 
   points = bezier_curve(step, p0, p1, p2, p3);
 
-  polyline(points, size*widthBottom, size*widthTop);
+  polyline(points, mySize*widthBottom, mySize*widthTop);
 
   // draw control points for debugging
   if (control) {
@@ -84,10 +91,8 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
   }
 
 
-  sizemod = 1;
-  echo("depth:", depth, "start:", p3);
     if (depth > 0) {
-      trunk(size = size*.9, depth = depth - 1, bend = bend*.9, seed = seed + 5, 
+      trunk(size = mySize*.9, depth = depth - 1, bend = bend*.9, seed = seed + 5, 
             widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth,
             maxGrowth = maxGrowth, step = step, start = p3, control = control);
     }
@@ -124,4 +129,4 @@ module trunk(size = 300, depth = 3, seed = 55, widthBottom = 0.25, widthTop = 0.
 
 }
 
-trunk(size = 500, seed = 4, bend = 200, control = true, depth = 5);
+trunk(size = 500, seed = 4, bend = 50, control = true, depth = 5);
