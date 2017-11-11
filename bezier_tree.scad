@@ -46,6 +46,7 @@ module polyline(points, startWidth = 40, endWidth = 20) {
     }
   }
   polyline_inner(points, 1);
+
 }
 
 
@@ -53,17 +54,8 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 //  decay = 0.7, step = 0.01) {
 
 
-/*
-module trunk(seed = 55, size = 300, step = 0.01, depth = 3, bend = 75, 
-            widthBottom = .3,
-            widthTop = .2, 
-            minGrowth = 0.8,
-            maxGrowth = 1.2,
-*/
-module trunk(size = 300, depth = 3, seed = 55, widthBottom = 0.25, widthTop = 0.18,
-            minGrowth = 0.8, maxGrowth = 1.2, step = 0.01, start = [0,0], 
-            ) {
-
+module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth,
+                  maxGrowth, step, start) {
   p0 = start;
   p1 = [rands(-bend, bend, 1, seed)[0], rands(p0[1], size/2, 1, seed+1)[0]]; 
   p2 = [rands(-bend, bend, 1, seed+2)[0], 
@@ -73,20 +65,41 @@ module trunk(size = 300, depth = 3, seed = 55, widthBottom = 0.25, widthTop = 0.
 
   pArray = [p0, p1, p2, p3];
 
-  points = bezier_curve(step, 
-      p0, p1, p2, p3
-  );
-  
-  polyline(points, 40, 20);
+  points = bezier_curve(step, p0, p1, p2, p3);
+
+  polyline(points, size*widthBottom, size*widthTop);
+
 
   
+}
 
-  for (i=pArray) {
-    color("red")
-    translate(i)
-      square(10, center = true);
+module trunk(size = 300, depth = 3, seed = 55, widthBottom = 0.25, widthTop = 0.15,
+            minGrowth = 0.8, maxGrowth = 1.2, step = 0.01, start = [0,0]) {
+
+  /*
+  p0 = start;
+  p1 = [rands(-bend, bend, 1, seed)[0], rands(p0[1], size/2, 1, seed+1)[0]]; 
+  p2 = [rands(-bend, bend, 1, seed+2)[0], 
+	rands(p1[1], size/2*2, 1, seed+3)[0]];
+  p3 = [rands(-bend, bend, 1, seed+4)[0],
+        size];
+
+  //calculate the points along the bezier curve
+  points = bezier_curve(step, p0, p1, p2, p3 );
+  
+  //draw a branch
+  polyline(points, size*widthBottom, size*widthTop);
+  */
+
+  //select the type of branch
+  branchType = rands(0, 100, 1, seed+5)[0];
+
+  if (0 < branchType && branchType < 100) {
+    branch_one(size = size*.9, depth = depth, bend = bend, seed = seed+6, 
+              widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
+              maxGrowth = maxGrowth, step = 0.01, start = start);
   }
 
 }
 
-trunk(seed=27, bend = 45);
+trunk(size = 500, seed = 32, bend = 100);
