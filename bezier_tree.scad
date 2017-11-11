@@ -61,10 +61,10 @@ module trunk(seed = 55, size = 300, step = 0.01, depth = 3, bend = 75,
             maxGrowth = 1.2,
 */
 module trunk(size = 300, depth = 3, seed = 55, widthBottom = 0.25, widthTop = 0.18,
-            minGrowth = 0.8, maxGrowth = 1.2, step = 0.01
+            minGrowth = 0.8, maxGrowth = 1.2, step = 0.01, start = [0,0], 
             ) {
 
-  p0 = [0, 0];
+  p0 = start;
   p1 = [rands(-bend, bend, 1, seed)[0], rands(p0[1], size/2, 1, seed+1)[0]]; 
   p2 = [rands(-bend, bend, 1, seed+2)[0], 
 	rands(p1[1], size/2*2, 1, seed+3)[0]];
