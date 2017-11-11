@@ -57,6 +57,8 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth,
                   maxGrowth, decay, step, start, control) {
 
+  angle = 15;
+
 
   sizemod = rands(minGrowth, maxGrowth, 3, seed+4);
   mySize = sizemod[0]*size;
@@ -73,7 +75,26 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
 
   points = bezier_curve(step, p0, p1, p2, p3);
 
-  echo("depth:", depth, widthBottom, widthTop);
+/*
+p0 = [0, 0];
+p1 = [-100, 200];
+p2 = [34, 450];
+p3 = [-75, 800];
+
+points = bezier_curve(0.01, p0, p1, p2, p3);
+
+rotate([0, 0, 15])
+polyline(points);
+translate([p3[0]-p3[1]*cos(90-15), p3[1]*sin(90-15), 0])
+rotate([0, 0, -15])
+polyline(points);
+*/
+  
+  rot = rands(-angle, angle, 1, seed+4)[0];
+  trans = [p3[0]-p3[1]*cos(90-rot), p3[1]*sin(90-rot), 0];
+
+
+  //rotate([0, 0, rot])
   polyline(points, widthBottom, widthTop);
 
   // draw control points for debugging
@@ -114,5 +135,6 @@ module trunk(size = 300, depth = 3, seed = 55, widthBottom = 75, widthTop = 45,
 
 }
 
-trunk(size = 500, seed = 4, bend = 50, control = true, depth = 5, decay = .7,
+trunk(size = 500, seed = 8, bend = 50, control = true, depth = 5, decay = .8,
       widthBottom = 100, widthTop = 50);
+
