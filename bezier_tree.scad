@@ -55,7 +55,7 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 
 
 module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth,
-                  maxGrowth, step, start, control) {
+                  maxGrowth, decay, step, start, control) {
 
 
   sizemod = rands(minGrowth, maxGrowth, 3, seed+4);
@@ -79,7 +79,7 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
 
   points = bezier_curve(step, p0, p1, p2, p3);
 
-  polyline(points, mySize*widthBottom, mySize*widthTop);
+  polyline(points, widthBottom, widthTop);
 
   // draw control points for debugging
   if (control) {
@@ -92,16 +92,21 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
 
 
     if (depth > 0) {
-      trunk(size = mySize*.9, depth = depth - 1, bend = bend*.9, seed = seed + 5, 
-            widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth,
-            maxGrowth = maxGrowth, step = step, start = p3, control = control);
+      trunk(size = mySize*decay, depth = depth - 1, bend = bend*decay, seed = seed + 5, 
+            widthBottom = widthTop, widthTop = widthBottom*decay, 
+            minGrowth = minGrowth, maxGrowth = maxGrowth, decay = decay, 
+            step = step, start = p3, control = control);
     }
   
 }
 
-module trunk(size = 300, depth = 3, seed = 55, widthBottom = 0.25, widthTop = 0.15,
-            minGrowth = 0.8, maxGrowth = 1.2, step = 0.01, start = [0,0], 
-            control = false) {
+//module trunk(size = 300, depth = 3, seed = 55, widthBottom = 0.25, widthTop = 0.15,
+//            minGrowth = 0.8, maxGrowth = 1.2, step = 0.01, start = [0,0], 
+//            control = false) {
+
+module trunk(size = 300, depth = 3, seed = 55, widthBottom = 75, widthTop = 45, 
+            minGrowth = 0.8, maxGrowth = 1.2, , decay = 0.9, 
+            step = 0.01, start = [0,0], control = true) {
 
   /*
   p0 = start;
@@ -124,9 +129,10 @@ module trunk(size = 300, depth = 3, seed = 55, widthBottom = 0.25, widthTop = 0.
   if (0 < branchType && branchType < 100) {
     branch_one(size = size, depth = depth, bend = bend, seed = seed+6, 
               widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
-              maxGrowth = maxGrowth, step = 0.01, start = start, control = control);
+              maxGrowth = maxGrowth, decay = decay, step = 0.01, 
+              start = start, control = control);
   }
 
 }
 
-trunk(size = 500, seed = 4, bend = 50, control = true, depth = 5);
+trunk(size = 500, seed = 4, bend = 50, control = true, depth = 5, decay = .9);
