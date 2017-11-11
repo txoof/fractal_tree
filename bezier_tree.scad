@@ -55,10 +55,7 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 
 
 module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth,
-                  maxGrowth, decay, step, start, control) {
-
-  angle = 15;
-
+                  maxGrowth, decay, maxAngle, step, start, control) {
 
   sizemod = rands(minGrowth, maxGrowth, 3, seed+4);
   mySize = sizemod[0]*size;
@@ -75,7 +72,8 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
 
   points = bezier_curve(step, p0, p1, p2, p3);
 
-  rot = rands(-angle, angle, 1, seed+4)[0];
+  //main branch should be less angled than side branches
+  rot = rands(-maxAngle/2, maxAngle/2, 1, seed+4)[0];
 
   tip = [start[0]+p3[0]-p3[1]*cos(90-rot), start[1]+p3[1]*sin(90-rot), 0];
 
@@ -105,7 +103,7 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
     trunk(size = mySize*decay, depth = depth - 1, bend = bend*decay, seed = seed + 5, 
           widthBottom = widthTop, widthTop = widthTop*decay, 
           minGrowth = minGrowth, maxGrowth = maxGrowth, decay = decay, 
-          step = step, start = tip, 
+          maxAngle = maxAngle, step = step, start = tip, 
           control = control);
   }
   
@@ -113,7 +111,7 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
 
 
 module trunk(size = 300, depth = 3, seed = 55, widthBottom = 75, widthTop = 45, 
-            minGrowth = 0.8, maxGrowth = 1.2, , decay = 0.9, 
+            minGrowth = 0.8, maxGrowth = 1.2, , decay = 0.9, maxAngle = 30,
             step = 0.01, start = [0,0], control = true) {
 
   //select the type of branch
@@ -122,12 +120,12 @@ module trunk(size = 300, depth = 3, seed = 55, widthBottom = 75, widthTop = 45,
   if (0 < branchType && branchType < 100) {
     branch_one(size = size, depth = depth, bend = bend, seed = seed+6, 
               widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
-              maxGrowth = maxGrowth, decay = decay, step = 0.01, 
+              maxGrowth = maxGrowth, decay = decay, maxAngle = maxAngle, step = step, 
               start = start, control = control);
   }
 
 }
 
-trunk(size = 500, seed = 55, bend = 50, control = true, depth = 5, decay = .8,
+trunk(size = 500, seed = 5, bend = 50, control = true, depth = 5, decay = .8,
       widthBottom = 100, widthTop = 50);
 
