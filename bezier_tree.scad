@@ -52,7 +52,7 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 //module tree(height = 600, trunk = 50, bend = 300, depth = 3, seed = 5, 
 //  decay = 0.7, step = 0.01) {
 
-module tree(seed = 55, height = 300, step = 0.01, depth = 3, bend = 75, 
+module trunk(seed = 55, height = 300, step = 0.01, depth = 3, bend = 75, 
             widthBottom = .3,
             widthTop = .2, 
             minGrowth = 0.8,
@@ -82,4 +82,4 @@ module tree(seed = 55, height = 300, step = 0.01, depth = 3, bend = 75,
 
 }
 
-tree(seed=27, bend = 30);
+trunk(seed=27, bend = 30);
