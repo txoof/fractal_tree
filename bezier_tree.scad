@@ -52,7 +52,7 @@ function randControlPoints(seed, bend, size) = [
   [rands(-bend, bend, 1, seed+4)[0], size] 
   ];
 
-
+/*
 module debug() {
   pa = [[0,0], [10, 10], [-10, 50], [10, 100]];
   t = .01;
@@ -62,6 +62,7 @@ module debug() {
   echo("bezierPoint:", bezierPoint(t, pa));
 
 }
+*/
 
 
 module line(point1, point2, width = 1, cap_round = true) {
@@ -98,12 +99,6 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 }
 
 
-//module tree(size = 600, trunk = 50, bend = 300, depth = 3, seed = 5, 
-//  decay = 0.7, step = 0.01) {
-
-//echo(bezierCurve(t_step = 0.01, controlPoints = randControlPoints(seed = 10, bend = 50, size = 300)));
-
-
 module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth,
                   maxGrowth, decay, maxAngle, step, start, control) {
 
@@ -127,7 +122,7 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
         p0[1]+mySize];
 
   pArray = [p0, p1, p2, p3];
-  randArray = randControlPoints(seed = seed, bend = bend, size = size);
+  randArray = randControlPoints(seed = seed, bend = bend, size = mySize);
   //echo("randArray:", randArray);
 
   //calculate the bezier curve points based on the selected control points
