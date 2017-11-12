@@ -16,7 +16,12 @@ function bezier_curve(t_step, p0, p1, p2, p3) =
     [for(t = [0: t_step: 1 + t_step]) bezier_point(t, p0, p1, p2, p3)];
 
 
-function randControlPoints(seed, bend, size) = [ ];
+function randControlPoints(seed, bend, size) = [ 
+  [0, 0], 
+  [rands(-bend, bend, 1, seed+0)[0], rands(size/6, size/6*3, 1, seed+1)[0]], 
+  [rands(-bend, bend, 1, seed+2)[0], rands(size/6*3, size/6*5, 1, seed+3)[0]],
+  [rands(-bend, bend, 1, seed+4)[0], size] 
+  ];
 
 
 module line(point1, point2, width = 1, cap_round = true) {
