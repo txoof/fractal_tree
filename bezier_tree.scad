@@ -127,9 +127,9 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
         start[1]+randArray[3][1]*sin(90-rot), 0];
 
 
-  tipArray = [ for (k=[0:branchType-1]) 
-              [start[0]+pointsArray[k][3][0]-pointsArray[k][3][1]*cos(90-rot),
-               start[1]+pointsArray[k][3][1]*sin(90-rot), 0]];
+//  tipArray = [ for (k=[0:branchType-1]) 
+//              [start[0]+pointsArray[k][3][0]-pointsArray[k][3][1]*cos(90-rot),
+//               start[1]+pointsArray[k][3][1]*sin(90-rot), 0]];
 
 
   translate(tip)
@@ -137,7 +137,7 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
     square(2*widthTop, center = true);
 
   // move to the starting point (previous tip)
-  translate(start) {
+//  translate(start) {
     rotate([0, 0, rot])
     polyline(points, widthBottom, widthTop);
 
@@ -149,19 +149,17 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
           square(size*.05, center = true);
       }
     }
-  }
 
-  for (branch=pointsArray) {
-    echo(branch);
-  }
-  
   //stop recursion if depth is less than 0
-  if (depth > 0) {
-    trunk(size = mySize*decay, depth = depth - 1, bend = bend*decay, seed = seed + 5, 
-          widthBottom = widthTop, widthTop = widthTop*decay, 
-          minGrowth = minGrowth, maxGrowth = maxGrowth, decay = decay, 
-          maxAngle = maxAngle, step = step, start = tip, 
-          control = control);
+  translate(tip) {
+    if (depth > 0) {
+      //rotation goes here not above.
+      trunk(size = mySize*decay, depth = depth - 1, bend = bend*decay, seed = seed + 5, 
+            widthBottom = widthTop, widthTop = widthTop*decay, 
+            minGrowth = minGrowth, maxGrowth = maxGrowth, decay = decay, 
+            maxAngle = maxAngle, step = step, start = start, 
+            control = control);
+    }
   }
   
 }
