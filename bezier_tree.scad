@@ -4,6 +4,13 @@ function bezier_coordinate(t, n0, n1, n2, n3) =
     n0 * pow((1 - t), 3) + 3 * n1 * t * pow((1 - t), 2) + 
         3 * n2 * pow(t, 2) * (1 - t) + n3 * pow(t, 3);
 
+function bezierCoordinate(t, coord) = 
+  coord[0] * pow((1 - t), 3) + 3 * coord[1] * t * pow((1 - t), 2) +
+    3 * coord[2] * pow(t, 2) * (1 - t) + coord[3] * pow(t, 3);
+
+
+
+
 function bezier_point(t, p0, p1, p2, p3) = 
     [
         bezier_coordinate(t, p0[0], p1[0], p2[0], p3[0]),
@@ -11,10 +18,23 @@ function bezier_point(t, p0, p1, p2, p3) =
         bezier_coordinate(t, p0[2], p1[2], p2[2], p3[2])
     ];
 
+function bezierPoint(t, controlPoints) = 
+  [
+    bezierCoordinate(t, [controlPoints[0][0], controlPoints[1][0], controlPoints[2][0],
+                    controlPoints[3][0]]),
+    bezierCoordinate(t, [controlPoints[0][1], controlPoints[1][1], controlPoints[2][1],
+                    controlPoints[3][1]]),
+    bezierCoordinate(t, [controlPoints[0][2], controlPoints[1][2], controlPoints[2][2],
+                    controlPoints[3][2]])
+  ];
+
+
 // calculate points along a bezier curver
 function bezier_curve(t_step, p0, p1, p2, p3) = 
     [for(t = [0: t_step: 1 + t_step]) bezier_point(t, p0, p1, p2, p3)];
 
+function bezierCurve(t_step, controlPoints) = 
+  [for(t = [0:t_step:1+t_step]) bezierPoint(t, controlPoints)];
 
 function randControlPoints(seed, bend, size) = [ 
   // start at origin
@@ -26,6 +46,17 @@ function randControlPoints(seed, bend, size) = [
   // choose X points between max/min bend, Y point at size
   [rands(-bend, bend, 1, seed+4)[0], size] 
   ];
+
+
+module debug() {
+  pa = [[0,0], [10, 10], [-10, 50], [10, 100]];
+  t = .01;
+  echo("bezier_coordinates:", bezier_coordinate(t, pa[0], pa[1], pa[2], pa[3]) );
+  echo("bezier_point:", bezier_point(t, pa[0], pa[1], pa[2], pa[3]));
+  echo("bezierCorodinates:", bezierCoordinate(t, pa));
+  echo("bezierPoint:", bezierPoint(t, pa));
+
+}
 
 
 module line(point1, point2, width = 1, cap_round = true) {
@@ -65,6 +96,8 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 //module tree(size = 600, trunk = 50, bend = 300, depth = 3, seed = 5, 
 //  decay = 0.7, step = 0.01) {
 
+//echo(bezierCurve(t_step = 0.01, controlPoints = randControlPoints(seed = 10, bend = 50, size = 300)));
+
 
 module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth,
                   maxGrowth, decay, maxAngle, step, start, control) {
@@ -89,9 +122,14 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
         p0[1]+mySize];
 
   pArray = [p0, p1, p2, p3];
+  randArray = randControlPoints(seed = seed, bend = bend, size = size);
+  //echo("randArray:", randArray);
 
   //calculate the bezier curve points based on the selected control points
-  points = bezier_curve(step, p0, p1, p2, p3);
+  //points = bezier_curve(step, p0, p1, p2, p3);
+  //echo(points);
+  points = bezierCurve(step, randArray);
+  
 
   //main branch should be less angled than side branches
   rot = rands(-maxAngle/2, maxAngle/2, 1, seed+4)[0];
