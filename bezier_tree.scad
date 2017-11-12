@@ -107,8 +107,6 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
   sizemod = rands(minGrowth, maxGrowth, 3, seed+4);
   mySize = sizemod[0]*size;
 
-  //pArray = [p0, p1, p2, p3];
-
   //calculate a random 4 point vector for creating tree segment
   randArray = randControlPoints(seed = seed, bend = bend, size = mySize);
 
@@ -120,11 +118,21 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
 
   //main branch should be less angled than side branches
   rot = rands(-maxAngle/2, maxAngle/2, 1, seed+4)[0];
+
+  rotArray = rands(-maxAngle, maxAngle, branchType, seed+4);
   
   //calculate the location of the tip based on the rotation angle
   //tip = [start[0]+p3[0]-p3[1]*cos(90-rot), start[1]+p3[1]*sin(90-rot), 0];
   tip = [start[0]+randArray[3][0]-randArray[3][1]*cos(90-rot), 
         start[1]+randArray[3][1]*sin(90-rot), 0];
+
+
+  tipArray = [ for (k=[0:branchType-1]) 
+              [start[0]+pointsArray[k][3][0]-pointsArray[k][3][1]*cos(90-rot),
+               start[1]+pointsArray[k][3][1]*sin(90-rot), 0]];
+
+
+  echo(branchType, tipArray)
 
   translate(tip)
     color("yellow")
