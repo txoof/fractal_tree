@@ -131,7 +131,6 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
               [start[0]+pointsArray[k][3][0]-pointsArray[k][3][1]*cos(90-rot),
                start[1]+pointsArray[k][3][1]*sin(90-rot), 0]];
 
-
   translate(tip)
     color("yellow")
     square(2*widthTop, center = true);
@@ -140,7 +139,8 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
   translate(start) {
     rotate([0, 0, rot])
     polyline(points, widthBottom, widthTop);
-
+  }
+/*
     // draw control points for debugging
     if (control) {
       for (i=randArray) {
@@ -150,12 +150,16 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
       }
     }
   }
+*/
 
-
-  for (branch=pointsArray) {
-    echo(branch);
+  for (branch=[0:branchType-1]) {
+    translate(start) {
+      rotate([0, 0, rotArray[branch]])
+      color("orange")
+      polyline(pointsArray[branch], widthBottom, widthTop);
+    }
   }
-  
+
   //stop recursion if depth is less than 0
   if (depth > 0) {
     trunk(size = mySize*decay, depth = depth - 1, bend = bend*decay, seed = seed + 5, 
@@ -182,7 +186,7 @@ start           [vector]    x, y, z for base of tree
 
 */
 module trunk(size = 300, depth = 3, seed = 55, widthBottom = 75, widthTop = 45, 
-            minGrowth = 0.8, maxGrowth = 1.2, , decay = 0.9, maxAngle = 30,
+            minGrowth = 0.8, maxGrowth = 1.2, , decay = 0.9, maxAngle = 35,
             step = 0.01, branchType = 1, start = [0,0], control = true) {
 
 
