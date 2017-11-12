@@ -132,8 +132,6 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
                start[1]+pointsArray[k][3][1]*sin(90-rot), 0]];
 
 
-  echo(branchType, tipArray)
-
   translate(tip)
     color("yellow")
     square(2*widthTop, center = true);
@@ -153,6 +151,10 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
     }
   }
 
+
+  for (branch=pointsArray) {
+    echo(branch);
+  }
   
   //stop recursion if depth is less than 0
   if (depth > 0) {
