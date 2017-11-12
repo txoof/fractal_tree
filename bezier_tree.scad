@@ -104,7 +104,6 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
 
   //generate sufficient random values for multiple branches here
 
-
   sizemod = rands(minGrowth, maxGrowth, 3, seed+4);
   mySize = sizemod[0]*size;
 
@@ -114,7 +113,13 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
   randArray = randControlPoints(seed = seed, bend = bend, size = mySize);
 
   points = bezierCurve(step, randArray);
-  
+
+  echo(depth, branchType);
+  pointsArray = [for (j=[0:branchType-1]) randControlPoints(seed = seed+j, bend = bend,
+    size = mySize)];
+
+  echo(pointsArray);
+
   //main branch should be less angled than side branches
   rot = rands(-maxAngle/2, maxAngle/2, 1, seed+4)[0];
   
