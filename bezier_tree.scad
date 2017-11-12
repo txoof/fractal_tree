@@ -74,7 +74,8 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
 
   //main branch should be less angled than side branches
   rot = rands(-maxAngle/2, maxAngle/2, 1, seed+4)[0];
-
+  
+  //calculate the location of the tip based on the rotation angle
   tip = [start[0]+p3[0]-p3[1]*cos(90-rot), start[1]+p3[1]*sin(90-rot), 0];
 
   translate(tip)
@@ -98,7 +99,7 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
 
 
   
-
+  //stop recursion if depth is less than 0
   if (depth > 0) {
     trunk(size = mySize*decay, depth = depth - 1, bend = bend*decay, seed = seed + 5, 
           widthBottom = widthTop, widthTop = widthTop*decay, 
