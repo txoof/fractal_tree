@@ -102,40 +102,23 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth,
                   maxGrowth, decay, maxAngle, step, start, control) {
 
-  //choose 3 random numbers to use for modifying the size of the branch
   sizemod = rands(minGrowth, maxGrowth, 3, seed+4);
   mySize = sizemod[0]*size;
 
-  //randomly choose control points within the paramaters
-  p0 = [0,0]; //always start at the origin
+  //pArray = [p0, p1, p2, p3];
 
-  //choose a control point between 1/6 and 3/6 of the total length
-  p1 = [rands(-bend, bend, 1, seed)[0], 
-        rands(p0[1]+mySize/6, p0[1]+mySize/6*3, 1, seed+1)[0]]; 
-
-  //choose a control point between 3/6 and 5/6 of the total length
-  p2 = [rands(-bend, bend, 1, seed+2)[0], 
-	rands(p0[1]+mySize/6*3, p0[1]+mySize/6*5, 1, seed+3)[0]];
-  
-  //final control point
-  p3 = [rands(-bend, bend, 1, seed+4)[0],
-        p0[1]+mySize];
-
-  pArray = [p0, p1, p2, p3];
+  //calculate a random 4 point vector for creating tree segment
   randArray = randControlPoints(seed = seed, bend = bend, size = mySize);
-  //echo("randArray:", randArray);
 
-  //calculate the bezier curve points based on the selected control points
-  //points = bezier_curve(step, p0, p1, p2, p3);
-  //echo(points);
   points = bezierCurve(step, randArray);
   
-
   //main branch should be less angled than side branches
   rot = rands(-maxAngle/2, maxAngle/2, 1, seed+4)[0];
   
   //calculate the location of the tip based on the rotation angle
-  tip = [start[0]+p3[0]-p3[1]*cos(90-rot), start[1]+p3[1]*sin(90-rot), 0];
+  //tip = [start[0]+p3[0]-p3[1]*cos(90-rot), start[1]+p3[1]*sin(90-rot), 0];
+  tip = [start[0]+randArray[3][0]-randArray[3][1]*cos(90-rot), 
+        start[1]+randArray[3][1]*sin(90-rot), 0];
 
   translate(tip)
     color("yellow")
@@ -148,14 +131,13 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
 
     // draw control points for debugging
     if (control) {
-      for (i=pArray) {
+      for (i=randArray) {
         translate(i)
           color("red")
           square(size*.05, center = true);
       }
     }
   }
-
 
   
   //stop recursion if depth is less than 0
