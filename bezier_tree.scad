@@ -17,9 +17,13 @@ function bezier_curve(t_step, p0, p1, p2, p3) =
 
 
 function randControlPoints(seed, bend, size) = [ 
+  // start at origin
   [0, 0], 
+  // choose X points between max/min bend, Y points on interval 1/6:3/6 size
   [rands(-bend, bend, 1, seed+0)[0], rands(size/6, size/6*3, 1, seed+1)[0]], 
+  // choose X points between max/min bend, Y points on interval 3/6:5/6 size
   [rands(-bend, bend, 1, seed+2)[0], rands(size/6*3, size/6*5, 1, seed+3)[0]],
+  // choose X points between max/min bend, Y point at size
   [rands(-bend, bend, 1, seed+4)[0], size] 
   ];
 
