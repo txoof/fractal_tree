@@ -114,11 +114,9 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
 
   points = bezierCurve(step, randArray);
 
-  echo(depth, branchType);
+  //generate list of branches variables to drawn
   pointsArray = [for (j=[0:branchType-1]) randControlPoints(seed = seed+j, bend = bend,
     size = mySize)];
-
-  echo(pointsArray);
 
   //main branch should be less angled than side branches
   rot = rands(-maxAngle/2, maxAngle/2, 1, seed+4)[0];
@@ -182,11 +180,23 @@ module trunk(size = 300, depth = 3, seed = 55, widthBottom = 75, widthTop = 45,
   //select the type of branch
   branchType = rands(0, 100, 1, seed+5)[0];
 
-  if (0 < branchType && branchType < 100) {
+  if (0 < branchType && branchType < 15) {
     branch_one(size = size, depth = depth, bend = bend, seed = seed+6, 
               widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
               maxGrowth = maxGrowth, decay = decay, maxAngle = maxAngle, step = step, 
               start = start, branchType = 1, control = control);
+  }
+  if (15 < branchType && branchType < 80) {
+    branch_one(size = size, depth = depth, bend = bend, seed = seed+6, 
+              widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
+              maxGrowth = maxGrowth, decay = decay, maxAngle = maxAngle, step = step, 
+              start = start, branchType = 2, control = control);
+  }
+  if (80 < branchType && branchType < 100) {
+    branch_one(size = size, depth = depth, bend = bend, seed = seed+6, 
+              widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
+              maxGrowth = maxGrowth, decay = decay, maxAngle = maxAngle, step = step, 
+              start = start, branchType = 3, control = control);
   }
 
 }
