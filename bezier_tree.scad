@@ -11,9 +11,12 @@ function bezier_point(t, p0, p1, p2, p3) =
         bezier_coordinate(t, p0[2], p1[2], p2[2], p3[2])
     ];
 
-
+// calculate points along a bezier curver
 function bezier_curve(t_step, p0, p1, p2, p3) = 
     [for(t = [0: t_step: 1 + t_step]) bezier_point(t, p0, p1, p2, p3)];
+
+
+function randControlPoints(seed, bend, size) = [ ];
 
 
 module line(point1, point2, width = 1, cap_round = true) {
@@ -57,19 +60,28 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth,
                   maxGrowth, decay, maxAngle, step, start, control) {
 
+  //choose 3 random numbers to use for modifying the size of the branch
   sizemod = rands(minGrowth, maxGrowth, 3, seed+4);
   mySize = sizemod[0]*size;
 
-  p0 = [0,0];
+  //randomly choose control points within the paramaters
+  p0 = [0,0]; //always start at the origin
+
+  //choose a control point between 1/6 and 3/6 of the total length
   p1 = [rands(-bend, bend, 1, seed)[0], 
         rands(p0[1]+mySize/6, p0[1]+mySize/6*3, 1, seed+1)[0]]; 
+
+  //choose a control point between 3/6 and 5/6 of the total length
   p2 = [rands(-bend, bend, 1, seed+2)[0], 
 	rands(p0[1]+mySize/6*3, p0[1]+mySize/6*5, 1, seed+3)[0]];
+  
+  //final control point
   p3 = [rands(-bend, bend, 1, seed+4)[0],
         p0[1]+mySize];
 
   pArray = [p0, p1, p2, p3];
 
+  //calculate the bezier curve points based on the selected control points
   points = bezier_curve(step, p0, p1, p2, p3);
 
   //main branch should be less angled than side branches
