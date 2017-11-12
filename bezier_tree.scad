@@ -113,13 +113,13 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
   points = bezierCurve(step, randArray);
 
   //generate list of branches variables to drawn
-  pointsArray = [for (j=[0:branchType-1]) randControlPoints(seed = seed+j, bend = bend,
-    size = mySize)];
+  //pointsArray = [for (j=[0:branchType-1]) randControlPoints(seed = seed+j, bend = bend,
+  //  size = mySize)];
 
   //main branch should be less angled than side branches
   rot = rands(-maxAngle/2, maxAngle/2, 1, seed+4)[0];
 
-  rotArray = rands(-maxAngle, maxAngle, branchType, seed+4);
+  //rotArray = rands(-maxAngle, maxAngle, branchType, seed+4);
   
   //calculate the location of the tip based on the rotation angle
   //tip = [start[0]+p3[0]-p3[1]*cos(90-rot), start[1]+p3[1]*sin(90-rot), 0];
@@ -150,18 +150,6 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
       }
     }
   }
-
-<<<<<<< HEAD
-  for (branch=[0:branchType-1]) {
-    translate(start) {
-      rotate([0, 0, rotArray[branch]])
-      color("orange")
-      polyline(pointsArray[branch], widthBottom, widthTop);
-    }
-  }
-*/
-=======
->>>>>>> parent of 0ee0378... add side branches, this is not correct
 
   for (branch=pointsArray) {
     echo(branch);
