@@ -102,6 +102,9 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth,
                   maxGrowth, decay, maxAngle, step, start, control) {
 
+  //generate sufficient random values for multiple branches here
+
+
   sizemod = rands(minGrowth, maxGrowth, 3, seed+4);
   mySize = sizemod[0]*size;
 
