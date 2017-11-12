@@ -100,7 +100,7 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 
 
 module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth,
-                  maxGrowth, decay, maxAngle, step, start, control) {
+                  maxGrowth, decay, maxAngle, step, branchType, start, control) {
 
   //generate sufficient random values for multiple branches here
 
@@ -154,10 +154,25 @@ module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrow
   
 }
 
+/*
+size            [real]      length of first segment
+depth           [integer]   number of recursion levels
+seed            [real]      random number seed 
+widthBottom     [real]      width at base of tree
+widthTop        [real]      width at tip of first segment
+minGrowth       [0<real<1]  minimum growth ratio of each new segment
+maxGrowth       [0<real<1]  maximum growth ratio of each new segment
+decay           [0<real<1]  ratio to decrease each segment by
+maxAngle        [real]      maximum angle of new segment with respect to vertical
+step            [0<real]    step size for segments of bezier curve
+start           [vector]    x, y, z for base of tree
 
+*/
 module trunk(size = 300, depth = 3, seed = 55, widthBottom = 75, widthTop = 45, 
             minGrowth = 0.8, maxGrowth = 1.2, , decay = 0.9, maxAngle = 30,
-            step = 0.01, start = [0,0], control = true) {
+            step = 0.01, branchType = 1, start = [0,0], control = true) {
+
+
 
   //select the type of branch
   branchType = rands(0, 100, 1, seed+5)[0];
@@ -166,7 +181,7 @@ module trunk(size = 300, depth = 3, seed = 55, widthBottom = 75, widthTop = 45,
     branch_one(size = size, depth = depth, bend = bend, seed = seed+6, 
               widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
               maxGrowth = maxGrowth, decay = decay, maxAngle = maxAngle, step = step, 
-              start = start, control = control);
+              start = start, branchType = 1, control = control);
   }
 
 }
