@@ -139,11 +139,20 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 
 /*
 draw between 1 and 3 poly lines rooted at the "start"
+  -this module should be called by module trunk()
 paramaters:
-
+  size          [real]        size of first segment (linear from origin)
+  depth         [integer]     recusion level
+  widthBottom   [real]        maximum width at base of branch
+  widthTop      [real]        maximum width at top of branch
+  minGrowth     [real]        minimum amount to grow the new branch (0.1 to 1.2)
+  maxGrowth     [real]        maximum amount to grow the new branch (0.1 to 1.2)
+  decay         [real]        base amount to diminish each branch by (0.5 to 0.9)
+  maxAngle      [real]        maximum angle to rotate each branch (0 to 180)
+  start         [vector]      x, y, z vector at which to start growing the branch
 */
-module branch(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth, 
-              maxGrowth, decay, maxAngle, step, branchType, start, control) {
+module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth, 
+              maxGrowth, decay, maxAngle, step, branchType, start) {
       
       sizemod = rands(minGrowth, maxGrowth, 1, seed+1)[0];
 
@@ -162,7 +171,6 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth,
       tip = controlPoints[3];
 
 
-      //echo(branchType, rotations);
       if (depth > 0) {
         translate(tip) {
           for (i=[0:branchType-1]) {
@@ -174,10 +182,6 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth,
                 minGrowth = minGrowth, maxGrowth = maxGrowth, decay = decay, 
                 maxAngle = maxAngle, step = step, start = tip, 
                 control = control);
-            //color("yellow")
-            //  square(mySize*.3, center = true);
-          
-
           }
         }
       }
@@ -264,6 +268,19 @@ decay           [0<real<1]  ratio to decrease each segment by
 maxAngle        [real]      maximum angle of new segment with respect to vertical
 step            [0<real]    step size for segments of bezier curve
 start           [vector]    x, y, z for base of tree
+
+paramaters:
+  size          [real]        size of first segment (linear from origin)
+  depth         [integer]     recusion level
+  widthBottom   [real]        maximum width at base of branch
+  widthTop      [real]        maximum width at top of branch
+  minGrowth     [real]        minimum amount to grow the new branch (0.1 to 1.2)
+  maxGrowth     [real]        maximum amount to grow the new branch (0.1 to 1.2)
+  decay         [real]        base amount to diminish each branch by (0.5 to 0.9)
+  maxAngle      [real]        maximum angle to rotate each branch (0 to 180)
+  start         [vector]      x, y, z vector at which to start growing the branch
+
+
 
 */
 module trunk(size = 200, depth = 3, seed = 55, widthBottom = 75, widthTop = 45, 
