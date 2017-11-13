@@ -98,6 +98,49 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 
 }
 
+module branch(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth, 
+              maxGrowth, decay, maxAngle, step, branchType, start, control) {
+      
+      sizemod = rands(minGrowth, maxGrowth, 1, seed+1)[0];
+
+      mySize = sizemod*size;
+
+      controlPoints = randControlPoints(seed = seed+2, bend = bend, size = mySize);
+      
+      bezierPoints = bezierCurve(step, controlPoints);
+
+      polyline(bezierPoints, widthBottom, widthTop);
+
+      rot = rands(-maxAngle, maxAngle, 1, seed+3)[0];
+
+      rotations = rands(-maxAngle, maxAngle, 3, seed+3);
+
+      //tip = [start[0]+controlPoints[3][0]-controlPoints[3][1]*cos(90-rot), 
+      //      start[1]+controlPoints[3][1]*sin(90-rot), 0];
+
+      tip = controlPoints[3];
+
+
+      echo(depth, rot, start, tip);
+    
+      if (depth > 0) {
+        translate(tip) {
+          rotate([0, 0, rot])
+          trunk(size = mySize*decay, depth = depth-1, bend = bend*decay, seed = seed+5, 
+              widthBottom = widthTop, widthTop = widthTop*decay, 
+              minGrowth = minGrowth, maxGrowth = maxGrowth, decay = decay, 
+              maxAngle = maxAngle, step = step, start = tip, 
+              control = control);
+          color("yellow")
+            square(mySize*.3, center = true);
+
+        }
+      }
+
+}
+
+trunk(size = 500, seed = 5, bend = 50, control = true, depth = 4, decay = .8,
+      widthBottom = 100, widthTop = 50, maxAngle = 40);
 
 module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth,
                   maxGrowth, decay, maxAngle, step, branchType, start, control) {
@@ -180,7 +223,7 @@ start           [vector]    x, y, z for base of tree
 */
 module trunk(size = 300, depth = 3, seed = 55, widthBottom = 75, widthTop = 45, 
             minGrowth = 0.8, maxGrowth = 1.2, , decay = 0.9, maxAngle = 30,
-            step = 0.01, branchType = 1, start = [0,0], control = true) {
+            step = 0.01, branchType = 1, start = [0, 0, 0], control = true) {
 
 
 
@@ -188,19 +231,19 @@ module trunk(size = 300, depth = 3, seed = 55, widthBottom = 75, widthTop = 45,
   branchType = rands(0, 100, 1, seed+5)[0];
 
   if (0 < branchType && branchType < 15) {
-    branch_one(size = size, depth = depth, bend = bend, seed = seed+6, 
+    branch(size = size, depth = depth, bend = bend, seed = seed+6, 
               widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
               maxGrowth = maxGrowth, decay = decay, maxAngle = maxAngle, step = step, 
               start = start, branchType = 1, control = control);
   }
   if (15 < branchType && branchType < 80) {
-    branch_one(size = size, depth = depth, bend = bend, seed = seed+6, 
+    branch(size = size, depth = depth, bend = bend, seed = seed+6, 
               widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
               maxGrowth = maxGrowth, decay = decay, maxAngle = maxAngle, step = step, 
               start = start, branchType = 2, control = control);
   }
   if (80 < branchType && branchType < 100) {
-    branch_one(size = size, depth = depth, bend = bend, seed = seed+6, 
+    branch(size = size, depth = depth, bend = bend, seed = seed+6, 
               widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
               maxGrowth = maxGrowth, decay = decay, maxAngle = maxAngle, step = step, 
               start = start, branchType = 3, control = control);
@@ -208,6 +251,4 @@ module trunk(size = 300, depth = 3, seed = 55, widthBottom = 75, widthTop = 45,
 
 }
 
-trunk(size = 500, seed = 5, bend = 50, control = true, depth = 5, decay = .8,
-      widthBottom = 100, widthTop = 50);
 
