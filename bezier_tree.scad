@@ -6,6 +6,12 @@ function bezier_coordinate(t, n0, n1, n2, n3) =
         3 * n2 * pow(t, 2) * (1 - t) + n3 * pow(t, 3);
 */
 
+/* 
+calculate a coordinate along a bezier curve
+paramaters:
+  t             [real]        step along the curve
+  coord         [vector]      x, y, z vector
+*/
 
 function bezierCoordinate(t, coord) = 
   coord[0] * pow((1 - t), 3) + 3 * coord[1] * t * pow((1 - t), 2) +
@@ -22,6 +28,13 @@ function bezier_point(t, p0, p1, p2, p3) =
     ];
 */
 
+/*
+calculate the points along a bezier curve
+paramaters:
+  t               [real]        step along the curve
+  controlPoints   [vector]      x, y, z vector
+*/
+
 function bezierPoint(t, controlPoints) = 
   [
     bezierCoordinate(t, [controlPoints[0][0], controlPoints[1][0], controlPoints[2][0],
@@ -33,13 +46,26 @@ function bezierPoint(t, controlPoints) =
   ];
 
 
-// calculate points along a bezier curve
 //function bezier_curve(t_step, p0, p1, p2, p3) = 
 //    [for(t = [0: t_step: 1 + t_step]) bezier_point(t, p0, p1, p2, p3)];
 
-
+/*
+calculate the bezier curve for four control points
+paramaters:
+  t_step          [real]      step size (smaller steps give finer curves)
+  controlPoints   [vector]    vector of x, y, z vectors [[0,0], [10,10], [-10,20], [0,50]]
+*/
 function bezierCurve(t_step, controlPoints) = 
   [for(t = [0:t_step:1+t_step]) bezierPoint(t, controlPoints)];
+
+
+/*
+generate a vector of four vector control points 
+paramaters:
+  seed            [real]      seed for random number generator
+  bend            [real]      maximum/minimum deflection for curve
+  size            [real]      length, from origin, of curve
+*/
 
 function randControlPoints(seed, bend, size) = [ 
   // start at origin
@@ -64,7 +90,12 @@ module debug() {
 }
 */
 
-
+/*
+draw a line segment along a bezier curve
+paramaters
+  point1          [vector]      x, y, z vector of a single point along a bezier curve
+  point2          [vector]      x, y, z vector of a single point adjacent to point1
+*/
 module line(point1, point2, width = 1, cap_round = true) {
     angle = 90 - atan((point2[1] - point1[1]) / (point2[0] - point1[0]));
     offset_x = 0.5 * width * cos(angle);
@@ -84,6 +115,14 @@ module line(point1, point2, width = 1, cap_round = true) {
     ]);
 }
 
+
+/*
+draw a (tapered) line along a vector curve
+paramaters:
+  points        [vector]      vector of x, y, z vectors that describe a bezier curve
+  startWidth    [real]        starting width of the poly line
+  endWidth      [real]        ending width of the poly line
+*/
 module polyline(points, startWidth = 40, endWidth = 20) {
   module polyline_inner(points, index) {
    //change the width with respect to the start and end
@@ -98,6 +137,11 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 
 }
 
+/*
+draw between 1 and 3 poly lines rooted at the "start"
+paramaters:
+
+*/
 module branch(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth, 
               maxGrowth, decay, maxAngle, step, branchType, start, control) {
       
