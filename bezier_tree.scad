@@ -255,7 +255,7 @@ module trunk(size = 200, depth = 3, seed = 55, widthBottom = 75, widthTop = 45,
   branchType = rands(0, 100, 1, seed+5)[0];
   
   one = 40;
-  two = 40;
+  two = 55;
 
 
 
@@ -280,6 +280,7 @@ module trunk(size = 200, depth = 3, seed = 55, widthBottom = 75, widthTop = 45,
 
 }
 
-trunk(size = 500, seed = 44, bend = 250, control = true, depth = 7, decay = .8, 
-      widthBottom = 200, widthTop = 75, maxAngle = 170, step = 0.05);
+trunk(size = 500, seed = 58, bend = 250, control = true, 
+      depth = 5, decay = .8, widthBottom = 200, widthTop = 75, 
+      maxAngle = 130, step = 0.05);
 
