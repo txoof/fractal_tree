@@ -188,8 +188,6 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
 
 }
 
-trunk(size = 500, seed = 44, bend = 250, control = true, depth = 7, decay = .8, 
-      widthBottom = 200, widthTop = 75, maxAngle = 170, step = 0.05);
 
 module branch_one(size, depth, bend, seed, widthBottom, widthTop, joint, minGrowth,
                   maxGrowth, decay, maxAngle, step, branchType, start, control) {
@@ -318,4 +316,6 @@ module trunk(size = 200, depth = 3, seed = 55, widthBottom = 75, widthTop = 45,
 
 }
 
+trunk(size = 500, seed = 44, bend = 250, control = true, depth = 7, decay = .8, 
+      widthBottom = 200, widthTop = 75, maxAngle = 170, step = 0.05);
 
