@@ -117,7 +117,9 @@ paramaters:
 */
 module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth, 
               maxGrowth, decay, maxAngle, step, branchType, start) {
-      
+  
+  debug = true;
+
   sizemod = rands(minGrowth, maxGrowth, 1, seed+1)[0];
 
   mySize = sizemod*size;
@@ -128,11 +130,24 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
 
 
   polyline(bezierPoints, widthBottom, widthTop);
+
+  /*
           for (j=[0:len(controlPoints)-1]) {
             color("red")
               translate(controlPoints[j])
               square(30, center = true);
           }
+  */
+
+  foo = 5;
+  if (debug) {
+    translate(controlPoints[3]) {
+      color("red")
+      text(str(depth,", ", branchType), halign = "left", size = widthBottom);
+      //color("yellow")
+      //square(widthBottom, center = true);
+    }
+  }
 
   rotations = rands(-maxAngle, maxAngle, branchType, seed+3);
 
@@ -199,8 +214,8 @@ module trunk(size = 200, depth = 3, seed = 55, widthBottom = 75, widthTop = 45,
   //select the type of branch
   branchType = rands(0, 100, 1, seed+5)[0];
   
-  one = 40;
-  two = 55;
+  one = 55;
+  two = 85;
 
   if (0 < branchType && branchType < one) {
     branch(size = size, depth = depth, bend = bend, seed = seed+6, 
@@ -228,7 +243,7 @@ module willow() {
   widthBottom = 200, widthTop = 75, maxAngle = 130, step = 0.05);
 }
 
-  trunk(size = 900, seed = 106, bend = 300, depth = 4, decay = .8, 
+  trunk(size = 2200, seed = 5, bend = 0, depth = 4, decay = .8, 
   widthBottom = 150, widthTop = 75, maxGrowth = .9, minGrowth = .8,
-        maxAngle = 90, step = 0.05);
+        maxAngle = 100, step = 0.05);
 
