@@ -212,29 +212,20 @@ module trunk(size = 200, depth = 3, seed = 55, widthBottom = 75, widthTop = 45,
 
 
   //select the type of branch
-  branchType = rands(0, 100, 1, seed+5)[0];
   
   one = 55;
   two = 85;
 
-  if (0 < branchType && branchType < one) {
-    branch(size = size, depth = depth, bend = bend, seed = seed+6, 
-              widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
-              maxGrowth = maxGrowth, decay = decay, maxAngle = maxAngle, step = step, 
-              start = start, branchType = 1);
-  }
-  if (one < branchType && branchType < two) {
-    branch(size = size, depth = depth, bend = bend, seed = seed+6, 
-              widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
-              maxGrowth = maxGrowth, decay = decay, maxAngle = maxAngle, step = step, 
-              start = start, branchType = 2);
-  }
-  if (two < branchType && branchType < 100) {
-    branch(size = size, depth = depth, bend = bend, seed = seed+6, 
-              widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
-              maxGrowth = maxGrowth, decay = decay, maxAngle = maxAngle, step = step, 
-              start = start, branchType = 3);
-  }
+  branchRand = rands(0, 100, 1, seed+5)[0];
+
+  branchType = (0 < branchRand && branchRand < one) ? 1 : 
+              (one < branchRand && branchRand < two) ? 2 : 3;
+  
+  branch(size = size, depth = depth, bend = bend, seed = seed+6, 
+        widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
+        maxGrowth = maxGrowth, decay = decay, maxAngle = maxAngle, step = step, 
+        start = start, branchType = branchType);
+
 
 }
 
@@ -243,7 +234,9 @@ module willow() {
   widthBottom = 200, widthTop = 75, maxAngle = 130, step = 0.05);
 }
 
+
   trunk(size = 2200, seed = 5, bend = 0, depth = 4, decay = .8, 
   widthBottom = 150, widthTop = 75, maxGrowth = .9, minGrowth = .8,
         maxAngle = 100, step = 0.05);
+
 
