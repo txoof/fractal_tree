@@ -116,7 +116,7 @@ paramaters:
   start         [vector]      x, y, z vector at which to start growing the branch
 */
 module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth, 
-              maxGrowth, decay, maxAngle, step, branchType, start) {
+              maxGrowth, decay, maxAngle, step, branchType, start, lastAngle) {
   
   debug = true;
 
@@ -143,9 +143,8 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
   if (debug) {
     translate(controlPoints[3]) {
       color("red")
-      text(str(depth,", ", branchType), halign = "left", size = widthBottom);
-      //color("yellow")
-      //square(widthBottom, center = true);
+      text(str(depth,", ", branchType, ", ", round(lastAngle)), 
+              halign = "left", size = widthTop);
     }
   }
 
@@ -165,7 +164,7 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
               seed = seed+1+i, widthBottom = widthTop, 
               widthTop = widthTop*decayRands[i], 
               minGrowth = minGrowth, maxGrowth = maxGrowth, decay = decay, 
-              maxAngle = maxAngle, step = step, start = tip);
+              maxAngle = maxAngle, step = step, start = tip, lastAngle = myRot);
 
           
         }
@@ -207,7 +206,7 @@ paramaters:
 */
 module trunk(size = 200, depth = 3, seed = 55, widthBottom = 75, widthTop = 45, 
             minGrowth = 0.8, maxGrowth = 1.2, decay = 0.9, maxAngle = 30,
-            step = 0.01, start = [0, 0, 0]) {
+            step = 0.01, start = [0, 0, 0], lastAngle = 0) {
 
 
 
@@ -224,7 +223,7 @@ module trunk(size = 200, depth = 3, seed = 55, widthBottom = 75, widthTop = 45,
   branch(size = size, depth = depth, bend = bend, seed = seed+6, 
         widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
         maxGrowth = maxGrowth, decay = decay, maxAngle = maxAngle, step = step, 
-        start = start, branchType = branchType);
+        start = start, lastAngle = lastAngle, branchType = branchType);
 
 
 }
