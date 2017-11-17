@@ -124,6 +124,8 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
 
   sizemod = rands(minGrowth, maxGrowth, branchNum, seed+1)[0];
 
+  //widthmod = rands(
+
   mySize = sizemod*size;
 
   controlPoints = randControlPoints(seed = seed+2, bend = bend, size = mySize);
@@ -144,7 +146,7 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
   if (debug) {
     translate(controlPoints[3]) {
       color("red")
-      text(str("dep:", depth,", dis:", distance, ", bn:", branchNum, 
+      text(str("dep:", depth,", seed:", seed, ", bn:", branchNum, 
                ", la:", round(lastAngle)), 
               halign = "left", size = widthTop);
     }
@@ -168,7 +170,7 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
         //rotate the starting position by myRot * direction (ccw, cw)
         rotate([0, 0, direction[i]*myRot]) {
           trunk(size = mySize*decay, depth = depth-1, bend = bend*decay, 
-              seed = seed+1+i, widthBottom = widthTop, 
+              seed = seed/(i+1), widthBottom = widthTop, 
               widthTop = widthTop*decayRands[i], 
               minGrowth = minGrowth, maxGrowth = maxGrowth, decay = decay, 
               maxAngle = maxAngle, step = step, start = tip, lastAngle = myRot);
@@ -228,8 +230,9 @@ module trunk(size = 200,
 
   //select the type of branch
   
-  one = 85;
-  two = 95;
+  one = 45;
+  two = 85;
+
 
   branchRand = rands(0, 100, 1, seed+5)[0];
 
@@ -251,9 +254,9 @@ module willow() {
 }
 
 
-  trunk(size = 900, seed = 5, bend = 150, depth = 4, decay = .8, 
+  trunk(size = 800, seed = 58, bend = 50, depth = 6, decay = .8, 
   widthBottom = 150, widthTop = 75, maxGrowth = .9, minGrowth = .8,
-        maxAngle = 75, step = 0.05);
+        maxAngle = 95, step = 0.05);
 
 
 
