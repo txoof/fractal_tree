@@ -150,8 +150,7 @@ module branch(size, depth, depthMax, bend, seed, widthBottom, widthTop, minGrowt
     translate(controlPoints[3]) {
       color("red")
       text(str("seed:", seed,", bn:", branchNum), 
-              
-              halign = "left", size = widthTop);
+              halign = "left", size = myWidthTop*.5);
     }
   }
 
@@ -196,29 +195,27 @@ module branch(size, depth, depthMax, bend, seed, widthBottom, widthTop, minGrowt
 
 
 /*
-size            [real]      length of first segment
-depth           [integer]   number of recursion levels
-seed            [real]      random number seed 
-widthBottom     [real]      width at base of tree
-widthTop        [real]      width at tip of first segment
-minGrowth       [0<real<1]  minimum growth ratio of each new segment
-maxGrowth       [0<real<1]  maximum growth ratio of each new segment
-decay           [0<real<1]  ratio to decrease each segment by
-maxAngle        [real]      maximum angle of new segment with respect to vertical
-step            [0<real]    step size for segments of bezier curve
-start           [vector]    x, y, z for base of tree
 
 paramaters:
+  * Denotes paramater that is used internally by recursion and is not intended to be
+    used from the inital module call
+  (suggested values)
+
   size          [real]        size of first segment (linear from origin)
-  depth         [integer]     recusion level
-  widthBottom   [real]        maximum width at base of branch
-  widthTop      [real]        maximum width at top of branch
+  depth         [integer]     recusion level (1 to 8)
+  widthBottom   [real]        maximum width at base of trunk
+  widthTop      [real]        maximum width at top of first trunk segment
   minGrowth     [real]        minimum amount to grow the new branch (0.1 to 1.2)
   maxGrowth     [real]        maximum amount to grow the new branch (0.1 to 1.2)
-  decay         [real]        base amount to diminish each branch by (0.5 to 0.9)
+  decay         [real]        base amount to diminish each branch by (0.5 to 1.2)
   maxAngle      [real]        maximum angle to rotate each branch (0 to 180)
-  start         [vector]      x, y, z vector at which to start growing the branch
-  distance      [integer]     distance from trunk 
+  minAngle      [real]        minimum angle to rotate each branch (0 to 180)
+  first         [boolean]     needs to be set to "true" when called 
+  *depthMax     [integer]     records maximum depth on first call
+  *distance     [integer]     records distance from "trunk" - can be used to diminish
+                              branches
+  *start        [vector]      records [x, y, z] vector at which to start 
+                              growing the branch
 
 */
 module trunk(size = 200, 
