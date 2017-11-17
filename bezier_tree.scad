@@ -122,7 +122,7 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
   
   debug = true;
 
-  sizemod = rands(minGrowth, maxGrowth, 1, seed+1)[0];
+  sizemod = rands(minGrowth, maxGrowth, branchNum, seed+1)[0];
 
   mySize = sizemod*size;
 
@@ -150,9 +150,14 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
     }
   }
 
-  rotations = rands(-maxAngle, maxAngle, branchNum, seed+3);
+  //rotations = rands(-maxAngle, maxAngle, branchNum, seed+3);
 
-  decayRands = rands(decay*decay, decay, branchNum, seed+4);
+  rotations = rands(0, maxAngle, branchNum, seed+3);
+  direction = [ for (j=[0:branchNum-1]) rands(-1, 1, 1, seed+j)[0]>=0 ? 1 : -1];
+  echo(direction);
+  echo(rotations);
+
+  decayRands = rands(decay*decay, decay, branchNum, seed+5);
 
   tip = controlPoints[3];
 
@@ -161,7 +166,8 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
     translate(tip) {
       for (i=[0:branchNum-1]) {
         myRot = i==0 ? rotations[i]/depth : rotations[i];
-        rotate([0, 0, myRot]) {
+        echo(direction[i]*myRot);
+        rotate([0, 0, direction[i]*myRot]) {
           trunk(size = mySize*decay, depth = depth-1, bend = bend*decay, 
               seed = seed+1+i, widthBottom = widthTop, 
               widthTop = widthTop*decayRands[i], 
@@ -205,16 +211,26 @@ paramaters:
   distance      [integer]     distance from trunk 
 
 */
-module trunk(size = 200, depth = 3, seed = 55, widthBottom = 75, widthTop = 45, 
-            minGrowth = 0.8, maxGrowth = 1.2, decay = 0.9, maxAngle = 30,
-            step = 0.01, start = [0, 0, 0], distance = 0, lastAngle = 0) {
+module trunk(size = 200, 
+             depth = 3, 
+             seed = 55, 
+             widthBottom = 75, 
+             widthTop = 45, 
+             minGrowth = 0.8, 
+             maxGrowth = 1.2, 
+             decay = 0.9, 
+             maxAngle = 30,
+             step = 0.01, 
+             start = [0, 0, 0], 
+             distance = 0, 
+             lastAngle = 0) {
 
 
 
   //select the type of branch
   
-  one = 55;
-  two = 85;
+  one = 85;
+  two = 95;
 
   branchRand = rands(0, 100, 1, seed+5)[0];
 
@@ -236,8 +252,11 @@ module willow() {
 }
 
 
-  trunk(size = 2200, seed = 5, bend = 0, depth = 4, decay = .8, 
+  trunk(size = 900, seed = 5, bend = 150, depth = 4, decay = .8, 
   widthBottom = 150, widthTop = 75, maxGrowth = .9, minGrowth = .8,
-        maxAngle = 100, step = 0.05);
+        maxAngle = 75, step = 0.05);
 
 
+
+//myRnd = rands(-1, 1, 1)[0]>=0 ? 1 : -1;
+//echo(myRnd);
