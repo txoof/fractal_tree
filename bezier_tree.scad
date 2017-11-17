@@ -150,12 +150,11 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
     }
   }
 
-  //rotations = rands(-maxAngle, maxAngle, branchNum, seed+3);
 
+  // create vector of branchNum angles between 0 and maxAngle
   rotations = rands(0, maxAngle, branchNum, seed+3);
+  // create vector of branchNum negative and positive values
   direction = [ for (j=[0:branchNum-1]) rands(-1, 1, 1, seed+j)[0]>=0 ? 1 : -1];
-  echo(direction);
-  echo(rotations);
 
   decayRands = rands(decay*decay, decay, branchNum, seed+5);
 
@@ -166,7 +165,7 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
     translate(tip) {
       for (i=[0:branchNum-1]) {
         myRot = i==0 ? rotations[i]/depth : rotations[i];
-        echo(direction[i]*myRot);
+        //rotate the starting position by myRot * direction (ccw, cw)
         rotate([0, 0, direction[i]*myRot]) {
           trunk(size = mySize*decay, depth = depth-1, bend = bend*decay, 
               seed = seed+1+i, widthBottom = widthTop, 
