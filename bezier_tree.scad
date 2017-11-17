@@ -116,24 +116,26 @@ paramaters:
   branchNum     [integer]     number of branches to draw
   start         [vector]      x, y, z vector at which to start growing the branch
 */
-module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth, 
+module branch(size, depth, depthMax, bend, seed, widthBottom, widthTop, minGrowth, 
               maxGrowth, decay, maxAngle, step, branchNum, 
               start, distance, lastAngle) {
   
-  debug = true;
+  debug = 0;
 
   sizemod = rands(minGrowth, maxGrowth, branchNum, seed+1)[0];
 
-  //widthmod = rands(
-
-  mySize = sizemod*size;
+  mySize = size*sizemod;
 
   controlPoints = randControlPoints(seed = seed+2, bend = bend, size = mySize);
   
   bezierPoints = bezierCurve(step, controlPoints);
 
+  myWidthTop = widthTop*(depth/depthMax)/(distance+1);
 
-  polyline(bezierPoints, widthBottom, widthTop);
+  polyline(bezierPoints, widthBottom, myWidthTop);
+
+  
+
 
   /*
           for (j=[0:len(controlPoints)-1]) {
@@ -146,7 +148,7 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
   if (debug) {
     translate(controlPoints[3]) {
       color("red")
-      text(str("dep:", depth,", seed:", seed, ", bn:", branchNum, 
+      text(str("dst:", distance,", depM:", depthMax, ", bn:", branchNum, 
                ", la:", round(lastAngle)), 
               halign = "left", size = widthTop);
     }
@@ -154,7 +156,7 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
 
 
   // create vector of branchNum angles between 0 and maxAngle
-  rotations = rands(0, maxAngle, branchNum, seed+3);
+  rotations = rands(minAngle, maxAngle, branchNum, seed+3);
   // create vector of branchNum negative and positive values
   direction = [ for (j=[0:branchNum-1]) rands(-1, 1, 1, seed+j)[0]>=0 ? 1 : -1];
 
@@ -163,17 +165,22 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
   tip = controlPoints[3];
 
 
-  if (depth > 0 && widthBottom > 1) { //stop if the width gets too small 
+  if (depth > 0 && widthBottom > 15) { //stop if the width gets too small 
     translate(tip) {
       for (i=[0:branchNum-1]) {
         myRot = i==0 ? rotations[i]/depth : rotations[i];
+        myDist = (i==0 && distance == 0 )? 0 : distance+1;
         //rotate the starting position by myRot * direction (ccw, cw)
         rotate([0, 0, direction[i]*myRot]) {
-          trunk(size = mySize*decay, depth = depth-1, bend = bend*decay, 
-              seed = seed/(i+1), widthBottom = widthTop, 
+          trunk(size = mySize*decay, depth = depth-1, depthMax = depthMax,
+              bend = bend*decay, 
+              seed = seed/(i+2), widthBottom = myWidthTop, 
               widthTop = widthTop*decayRands[i], 
-              minGrowth = minGrowth, maxGrowth = maxGrowth, decay = decay, 
-              maxAngle = maxAngle, step = step, start = tip, lastAngle = myRot);
+              minGrowth = minGrowth, maxGrowth = maxGrowth, 
+              decay = decay, 
+              maxAngle = maxAngle, minAngle = minAngle, 
+              step = step, start = tip, lastAngle = myRot,
+              distance = myDist);
 
           
         }
@@ -213,35 +220,43 @@ paramaters:
 
 */
 module trunk(size = 200, 
-             depth = 3, 
+             depth = 3,
+             depthMax = 1,
              seed = 55, 
              widthBottom = 75, 
              widthTop = 45, 
              minGrowth = 0.8, 
              maxGrowth = 1.2, 
              decay = 0.9, 
+             minAngle = 0,
              maxAngle = 30,
              step = 0.01, 
              start = [0, 0, 0], 
              distance = 0, 
-             lastAngle = 0) {
+             lastAngle = 0,
+             first = false) {
 
 
 
   //select the type of branch
   
-  one = 45;
-  two = 85;
-
-
+  one = 30;
+  two = 35;
   branchRand = rands(0, 100, 1, seed+5)[0];
 
   branchNum = (0 < branchRand && branchRand < one) ? 1 : 
               (one < branchRand && branchRand < two) ? 2 : 3;
   
-  branch(size = size, depth = depth, bend = bend, seed = seed+6, 
+  myDepthMax = first==true ? depth : depthMax;
+
+
+  branch(size = size, depth = depth, depthMax = myDepthMax,
+        bend = bend, seed = seed+4, 
         widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
-        maxGrowth = maxGrowth, decay = decay, maxAngle = maxAngle, step = step, 
+        maxGrowth = maxGrowth, decay = decay, 
+        minAngle = minAngle,
+        maxAngle = maxAngle,
+        step = step, 
         start = start, lastAngle = lastAngle, branchNum = branchNum, 
         distance = distance);
 
@@ -254,9 +269,9 @@ module willow() {
 }
 
 
-  trunk(size = 800, seed = 58, bend = 50, depth = 6, decay = .8, 
-  widthBottom = 150, widthTop = 75, maxGrowth = .9, minGrowth = .8,
-        maxAngle = 95, step = 0.05);
+  trunk(size = 250, seed = 10, bend = 70, depth = 4, decay = 1.1, 
+        widthBottom = 75, widthTop = 90, maxGrowth = .9, minGrowth = .8,
+        maxAngle = 35, minAngle = 35, step = 0.05, first = true);
 
 
 
