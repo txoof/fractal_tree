@@ -270,7 +270,7 @@ module willow() {
 }
 
 
-  trunk(size = 1000, seed = 41, bend = 100, depth = 7, decay = .95, 
+  trunk(size = 1000, seed = 22, bend = 100, depth = 6, decay = .95, 
         widthBottom = 300, widthTop = 280, maxGrowth = .9, minGrowth = .8,
         maxAngle = 37, minAngle = 35, step = 0.05, first = true);
 
