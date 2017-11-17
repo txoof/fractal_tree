@@ -155,7 +155,7 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
   tip = controlPoints[3];
 
 
-  if (depth > 0 && size > 1) {
+  if (depth > 0 && widthBottom > 1) { //stop if the width gets too small 
     translate(tip) {
       for (i=[0:branchType-1]) {
         myRot = i==1 ? rotations[i]/depth : rotations[i];
