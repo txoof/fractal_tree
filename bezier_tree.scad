@@ -166,7 +166,7 @@ module branch(size, depth, depthMax, bend, seed, widthBottom, widthTop, minGrowt
   tip = controlPoints[3];
 
 
-  if (depth > 0 && widthBottom > 15) { //stop if the width gets too small 
+  if (depth > 0 && myWidthTop > 10) { //stop if the width gets too small 
     translate(tip) {
       for (i=[0:branchNum-1]) {
         myRot = i==0 ? rotations[i]/depth : rotations[i];
@@ -242,7 +242,7 @@ module trunk(size = 200,
   //select the type of branch
   
   one = 10;
-  two = 90;
+  two = 50;
   branchRand = rands(0, 100, 1, seed+5)[0];
 
   branchNum = (0 < branchRand && branchRand < one) ? 1 : 
@@ -270,9 +270,9 @@ module willow() {
 }
 
 
-  trunk(size = 900, seed = 42, bend = 35, depth = 5, decay = 1, 
-        widthBottom = 350, widthTop = 100, maxGrowth = .9, minGrowth = .8,
-        maxAngle = 25, minAngle = 35, step = 0.05, first = true);
+  trunk(size = 1000, seed = 41, bend = 100, depth = 7, decay = .95, 
+        widthBottom = 300, widthTop = 280, maxGrowth = .9, minGrowth = .8,
+        maxAngle = 37, minAngle = 35, step = 0.05, first = true);
 
 
 
