@@ -117,7 +117,8 @@ paramaters:
   start         [vector]      x, y, z vector at which to start growing the branch
 */
 module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth, 
-              maxGrowth, decay, maxAngle, step, branchNum, start, lastAngle) {
+              maxGrowth, decay, maxAngle, step, branchNum, 
+              start, distance, lastAngle) {
   
   debug = true;
 
@@ -140,11 +141,11 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
           }
   */
 
-  foo = 5;
   if (debug) {
     translate(controlPoints[3]) {
       color("red")
-      text(str(depth,", ", branchNum, ", ", round(lastAngle)), 
+      text(str("dep:", depth,", dis:", distance, ", bn:", branchNum, 
+               ", la:", round(lastAngle)), 
               halign = "left", size = widthTop);
     }
   }
@@ -159,7 +160,7 @@ module branch(size, depth, bend, seed, widthBottom, widthTop, minGrowth,
   if (depth > 0 && widthBottom > 1) { //stop if the width gets too small 
     translate(tip) {
       for (i=[0:branchNum-1]) {
-        myRot = i==1 ? rotations[i]/depth : rotations[i];
+        myRot = i==0 ? rotations[i]/depth : rotations[i];
         rotate([0, 0, myRot]) {
           trunk(size = mySize*decay, depth = depth-1, bend = bend*decay, 
               seed = seed+1+i, widthBottom = widthTop, 
@@ -201,13 +202,12 @@ paramaters:
   decay         [real]        base amount to diminish each branch by (0.5 to 0.9)
   maxAngle      [real]        maximum angle to rotate each branch (0 to 180)
   start         [vector]      x, y, z vector at which to start growing the branch
-
-
+  distance      [integer]     distance from trunk 
 
 */
 module trunk(size = 200, depth = 3, seed = 55, widthBottom = 75, widthTop = 45, 
             minGrowth = 0.8, maxGrowth = 1.2, decay = 0.9, maxAngle = 30,
-            step = 0.01, start = [0, 0, 0], lastAngle = 0) {
+            step = 0.01, start = [0, 0, 0], distance = 0, lastAngle = 0) {
 
 
 
@@ -224,7 +224,8 @@ module trunk(size = 200, depth = 3, seed = 55, widthBottom = 75, widthTop = 45,
   branch(size = size, depth = depth, bend = bend, seed = seed+6, 
         widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
         maxGrowth = maxGrowth, decay = decay, maxAngle = maxAngle, step = step, 
-        start = start, lastAngle = lastAngle, branchNum = branchNum);
+        start = start, lastAngle = lastAngle, branchNum = branchNum, 
+        distance = distance);
 
 
 }
