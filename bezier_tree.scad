@@ -1,4 +1,8 @@
 /*
+Create a 2D Fractal Tree using OpenSCAD recursion and Bezier Curves
+
+tl;dr: trunk(first=true); 
+
 All Bezier Functions based on the excellent work of @caterpillar (Justin SDK)
 https://openhome.cc/eGossip/OpenSCAD/BezierCurve.html
 
@@ -6,6 +10,7 @@ Thanks to SteveWeber314 for his fractal tree tutorials
 https://www.thingiverse.com/steveweber314/about
 
 Releasted under GPL v3
+
 
 */
 
@@ -220,8 +225,11 @@ module branch(size, depth, depthMax, bend, seed, widthBottom, widthTop, minGrowt
 paramaters:
   * Denotes paramater that is used internally by recursion and is not intended to be
     used from the inital module call
-  (suggested values)
+  (suggested values in parentheses)
 
+  first         [boolean]     first - run sets persistent variables for recursion
+                              this **MUST** be set to true when the module is called:
+                              trunk(first=true); 
   size          [real]        size of first segment (linear from origin)
   depth         [integer]     recusion level (1 to 8)
   widthBottom   [real]        maximum width at base of trunk
@@ -229,9 +237,13 @@ paramaters:
   minGrowth     [real]        minimum amount to grow the new branch (0.1 to 1.2)
   maxGrowth     [real]        maximum amount to grow the new branch (0.1 to 1.2)
   decay         [real]        base amount to diminish each branch by (0.5 to 1.2)
-  maxAngle      [real]        maximum angle to rotate each branch (0 to 180)
   minAngle      [real]        minimum angle to rotate each branch (0 to 180)
-  first         [boolean]     needs to be set to "true" when called 
+  maxAngle      [real]        maximum angle to rotate each branch (0 to 180)
+  branchTypes   [vector]      % chance of one, two or three branches occuring
+                              [%one, %two, %three] ([10, 40, 50])
+  step          [real]        step size to use when generating bezier curves
+                              values approaching 0 are smoother, but take much longer
+                              to render (0.05)
   *depthMax     [integer]     records maximum depth on first call
   *distance     [integer]     records distance from "trunk" - can be used to diminish
                               branches
@@ -239,33 +251,45 @@ paramaters:
                               growing the branch
 
 */
-module trunk(size = 200, 
-             depth = 3,
+module trunk(first = false,
+             size = 1000, 
+             depth = 6,
              depthMax = 1,
-             seed = 55, 
-             widthBottom = 75, 
-             widthTop = 45, 
+             seed = 22, 
+             bend = 100,
+             widthBottom = 300, 
+             widthTop = 280, 
              minGrowth = 0.8, 
-             maxGrowth = 1.2, 
-             decay = 0.9, 
-             minAngle = 0,
-             maxAngle = 30,
-             step = 0.01, 
+             maxGrowth = .9, 
+             decay = 0.95, 
+             minAngle = 35,
+             maxAngle = 37,
+             bt = [10, 50, 45],
+             step = 0.05, 
              start = [0, 0, 0], 
-             distance = 0, 
-             first = false) {
+             distance = 0 
+             ) {
 
 
 
   //select the type of branch
   
-  one = 10;
-  two = 50;
+//  one = 10;
+//  two = 50;
+
+  brOne = bt[0];
+  brTwo = bt[0]+bt[1];
+
   branchRand = rands(0, 100, 1, seed+5)[0];
 
-  branchNum = (0 < branchRand && branchRand < one) ? 1 : 
-              (one < branchRand && branchRand < two) ? 2 : 3;
+
+
+  //choose the type of branch
+  branchNum = (branchRand < brOne) ? 1 : 
+              (brOne < branchRand && branchRand < brTwo) ? 2 : 3;
   
+  
+  //check if this is the first run; record the depthMax for use later
   myDepthMax = first==true ? depth : depthMax;
 
 
@@ -287,12 +311,10 @@ module willow() {
   widthBottom = 200, widthTop = 75, maxAngle = 130, step = 0.05);
 }
 
-
+/*
   trunk(size = 1000, seed = 22, bend = 100, depth = 6, decay = .95, 
         widthBottom = 300, widthTop = 280, maxGrowth = .9, minGrowth = .8,
         maxAngle = 37, minAngle = 35, step = 0.05, first = true);
+*/
+trunk(first = true, bt = [99, 1, 0]);
 
-
-
-//myRnd = rands(-1, 1, 1)[0]>=0 ? 1 : -1;
-//echo(myRnd);
