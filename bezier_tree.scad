@@ -264,7 +264,7 @@ module trunk(first = false,
              decay = 0.95, 
              minAngle = 35,
              maxAngle = 37,
-             bt = [10, 50, 45],
+             bt = [10, 50, 40],
              step = 0.05, 
              start = [0, 0, 0], 
              distance = 0 
@@ -311,10 +311,10 @@ module willow() {
   widthBottom = 200, widthTop = 75, maxAngle = 130, step = 0.05);
 }
 
-/*
+
   trunk(size = 1000, seed = 22, bend = 100, depth = 6, decay = .95, 
         widthBottom = 300, widthTop = 280, maxGrowth = .9, minGrowth = .8,
         maxAngle = 37, minAngle = 35, step = 0.05, first = true);
-*/
-trunk(first = true, bt = [99, 1, 0]);
+
+//trunk(first = true, bt = [99, 1, 0]);
 
