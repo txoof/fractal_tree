@@ -1,20 +1,35 @@
-//https://openhome.cc/eGossip/OpenSCAD/BezierCurve.html
+/*
+All Bezier Functions based on the excellent work of @caterpillar (Justin SDK)
+https://openhome.cc/eGossip/OpenSCAD/BezierCurve.html
+
+Thanks to SteveWeber314 for his fractal tree tutorials
+https://www.thingiverse.com/steveweber314/about
+
+Releasted under GPL v3
+
+*/
 
 /* 
 calculate a coordinate along a bezier curve
 paramaters:
   t             [real]        step along the curve
   coord         [vector]      x, y, z vector
+
+returns:
+  single coordinate value based on a vector point
 */
 function bezierCoordinate(t, coord) = 
   coord[0] * pow((1 - t), 3) + 3 * coord[1] * t * pow((1 - t), 2) +
     3 * coord[2] * pow(t, 2) * (1 - t) + coord[3] * pow(t, 3);
 
 /*
-calculate the points along a bezier curve
+calculate single point along a bezier curve
 paramaters:
   t               [real]        step along the curve
   controlPoints   [vector]      x, y, z vector
+
+returns:
+  vector of a point along a bezier curve
 */
 function bezierPoint(t, controlPoints) = 
   [
@@ -31,17 +46,23 @@ calculate the bezier curve for four control points
 paramaters:
   t_step          [real]      step size (smaller steps give finer curves)
   controlPoints   [vector]    vector of x, y, z vectors [[0,0], [10,10], [-10,20], [0,50]]
+
+returns:
+  vector of length/t_step points along a bezier curve
 */
 function bezierCurve(t_step, controlPoints) = 
   [for(t = [0:t_step:1+t_step]) bezierPoint(t, controlPoints)];
 
 
 /*
-generate a vector of four vector control points 
+generate a vector of four vector control points; first point is always [0, 0]
 paramaters:
   seed            [real]      seed for random number generator
   bend            [real]      maximum/minimum deflection for curve
   size            [real]      length, from origin, of curve
+
+returns:
+  [[0, 0], [x1, y1], [x2, y2], [x3, y3]]
 */
 function randControlPoints(seed, bend, size) = [ 
   // start at origin
