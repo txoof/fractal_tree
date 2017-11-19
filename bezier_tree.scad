@@ -143,7 +143,7 @@ paramaters:
   start         [vector]      x, y, z vector at which to start growing the branch
 */
 module branch(size, depth, depthMax, bend, seed, widthBottom, widthTop, minGrowth, 
-              maxGrowth, decay, maxAngle, step, branchNum, 
+              maxGrowth, decay, minAngle, maxAngle, step, branchNum, branchProb,
               start, distance) {
   
   debug = 0; 
@@ -207,7 +207,8 @@ module branch(size, depth, depthMax, bend, seed, widthBottom, widthTop, minGrowt
               decay = decay, 
               maxAngle = maxAngle, minAngle = minAngle, 
               step = step, start = tip, 
-              distance = myDist);
+              distance = myDist,
+              branchProb = branchProb);
 
           
         }
@@ -221,7 +222,6 @@ module branch(size, depth, depthMax, bend, seed, widthBottom, widthTop, minGrowt
 
 
 /*
-
 paramaters:
   * Denotes paramater that is used internally by recursion and is not intended to be
     used from the inital module call
@@ -239,7 +239,7 @@ paramaters:
   decay         [real]        base amount to diminish each branch by (0.5 to 1.2)
   minAngle      [real]        minimum angle to rotate each branch (0 to 180)
   maxAngle      [real]        maximum angle to rotate each branch (0 to 180)
-  branchTypes   [vector]      % chance of one, two or three branches occuring
+  branchProb    [vector]      % chance of one, two or three branches occuring
                               [%one, %two, %three] ([10, 40, 50])
   step          [real]        step size to use when generating bezier curves
                               values approaching 0 are smoother, but take much longer
@@ -264,21 +264,19 @@ module trunk(first = false,
              decay = 0.95, 
              minAngle = 35,
              maxAngle = 37,
-             bt = [10, 50, 40],
+             branchProb = [10, 50, 40],
              step = 0.05, 
              start = [0, 0, 0], 
              distance = 0 
              ) {
 
 
-
   //select the type of branch
   
 //  one = 10;
 //  two = 50;
-
-  brOne = bt[0];
-  brTwo = bt[0]+bt[1];
+  brOne = branchProb[0];
+  brTwo = branchProb[0]+branchProb[1];
 
   branchRand = rands(0, 100, 1, seed+5)[0];
 
@@ -300,9 +298,10 @@ module trunk(first = false,
         minAngle = minAngle,
         maxAngle = maxAngle,
         step = step, 
-        start = start, branchNum = branchNum, 
+        start = start, 
+        branchProb = branchProb,
+        branchNum = branchNum, 
         distance = distance);
-
 
 }
 
@@ -312,9 +311,9 @@ module willow() {
 }
 
 
-  trunk(size = 1000, seed = 22, bend = 100, depth = 6, decay = .95, 
-        widthBottom = 300, widthTop = 280, maxGrowth = .9, minGrowth = .8,
-        maxAngle = 37, minAngle = 35, step = 0.05, first = true);
+//  trunk(size = 1000, seed = 22, bend = 100, depth = 6, decay = .95, 
+//        widthBottom = 300, widthTop = 280, maxGrowth = .9, minGrowth = .8,
+//        maxAngle = 37, minAngle = 35, step = 0.05, first = true);
 
-//trunk(first = true, bt = [99, 1, 0]);
+trunk(first = true);
 
