@@ -131,21 +131,31 @@ module polyline(points, startWidth = 40, endWidth = 20) {
 draw between 1 and 3 poly lines rooted at the "start"
   -this module should be called by module trunk()
 paramaters:
+  * Denotes paramater that is used internally by recursion and is not intended to be
+    used from the inital module call
+  (suggested values in parentheses)
+
   size          [real]        size of first segment (linear from origin)
-  depth         [integer]     recusion level
-  widthBottom   [real]        maximum width at base of branch
-  widthTop      [real]        maximum width at top of branch
+  depth         [integer]     recusion level (1 to 8)
+  widthBottom   [real]        maximum width at base of trunk
+  widthTop      [real]        maximum width at top of first trunk segment
   minGrowth     [real]        minimum amount to grow the new branch (0.1 to 1.2)
   maxGrowth     [real]        maximum amount to grow the new branch (0.1 to 1.2)
-  decay         [real]        base amount to diminish each branch by (0.5 to 0.9)
+  decay         [real]        base amount to diminish each branch by (0.5 to 1.2)
+  minAngle      [real]        minimum angle to rotate each branch (0 to 180)
   maxAngle      [real]        maximum angle to rotate each branch (0 to 180)
-  branchNum     [integer]     number of branches to draw
-  start         [vector]      x, y, z vector at which to start growing the branch
+  branchProb    [vector]      % chance of one, two or three branches occuring
+                              [%one, %two, %three] ([10, 40, 50])
+  step          [real]        step size to use when generating bezier curves
+                              values approaching 0 are smoother, but take much longer
+                              to render (0.05)
+  *depthMax     [integer]     records maximum depth on first call
+  *distance     [integer]     records distance from "trunk" - can be used to diminish
+                              branches
+  *start        [vector]      records [x, y, z] vector at which to start 
+  *branchNum    [integer]     number of branches to draw at each joint (1-3)
 */
-module branch(//size, depth, depthMax, bend, seed, widthBottom, widthTop, minGrowth, 
-              //maxGrowth, decay, minAngle, maxAngle, step, branchNum, branchProb,
-              //start, distance) {
-             size, 
+module branch(size, 
              depth,
              depthMax,
              seed, 
@@ -159,8 +169,9 @@ module branch(//size, depth, depthMax, bend, seed, widthBottom, widthTop, minGro
              maxAngle,
              branchProb,
              step, 
-             start, 
-             distance 
+             distance, 
+             start,
+             branchNum
              ) {
 
 
@@ -210,28 +221,7 @@ module branch(//size, depth, depthMax, bend, seed, widthBottom, widthTop, minGro
 
   tip = controlPoints[3];
 
-/*
-             size, 
-             depth,
-             depthMax,
-             seed, 
-             bend,
-             widthBottom, 
-             widthTop, 
-             minGrowth, 
-             maxGrowth, 
-             decay, 
-             minAngle,
-             maxAngle,
-             branchProb,
-             step, 
-             start, 
-             distance 
-
-*/
-
-
-  if (depth > 0 && myWidthTop > 10) { //stop if the width gets too small 
+  if (depth > 0 && myWidthTop > 10) { //stop if the depth or width gets too small 
     translate(tip) {
       for (i=[0:branchNum-1]) {
         //select rotation value from the vector
@@ -254,16 +244,13 @@ module branch(//size, depth, depthMax, bend, seed, widthBottom, widthTop, minGro
                 maxAngle = maxAngle, //maintain maxAngle
                 branchProb = branchProb, //maintain branchProb
                 step = step, //maintain step
-                start = tip, //start of new banch is tip of this branch
-                distance = myDist //pass current distance from trunk 
-              );
-
-          
-        }
-        
-      }
-    }
-  }
+                distance = myDist, //pass current distance from trunk 
+                start = tip //start of new banch is tip of this branch
+                );
+        } //end rotation
+      } //end for loop
+    } // end translate
+  } // end if depth 
 
 }
 
@@ -314,8 +301,8 @@ module trunk(first = false,
              maxAngle = 37,
              branchProb = [10, 50, 40],
              step = 0.05, 
-             start = [0, 0, 0], 
-             distance = 0 
+             distance = 0, 
+             start = [0, 0, 0]
              ) {
 
 
@@ -339,17 +326,24 @@ module trunk(first = false,
   myDepthMax = first==true ? depth : depthMax;
 
 
-  branch(size = size, depth = depth, depthMax = myDepthMax,
-        bend = bend, seed = seed+4, 
-        widthBottom = widthBottom, widthTop = widthTop, minGrowth = minGrowth, 
-        maxGrowth = maxGrowth, decay = decay, 
-        minAngle = minAngle,
-        maxAngle = maxAngle,
-        step = step, 
-        start = start, 
-        branchProb = branchProb,
-        branchNum = branchNum, 
-        distance = distance);
+  branch(size = size, 
+         depth = depth, 
+         depthMax = myDepthMax,
+         seed = seed+4, 
+         bend = bend,         
+         widthBottom = widthBottom, 
+         widthTop = widthTop, 
+         minGrowth = minGrowth, 
+         maxGrowth = maxGrowth, 
+         decay = decay, 
+         minAngle = minAngle,
+         maxAngle = maxAngle,
+         branchProb = branchProb,
+         step = step, 
+         distance = distance,
+         start = start, 
+         branchNum = branchNum 
+         );
 
 }
 
