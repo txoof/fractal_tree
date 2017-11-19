@@ -1,18 +1,110 @@
 /*
-Create a 2D Fractal Tree using OpenSCAD recursion and Bezier Curves
+#2D Fractal Tree Library#
 
-tl;dr: trunk(first=true); 
+This library creates 2D objects that can be exported as SVG objects
+This does NOT produce a valid three dimensional object that can be printed. 
 
+
+##tl;dr:## 
++`trunk();`
++F6 (render)
++Export as an SVG in OpenSCAD: `File > Export > Export as SVG`
+
+##Thanks##
 All Bezier Functions based on the excellent work of @caterpillar (Justin SDK)
 https://openhome.cc/eGossip/OpenSCAD/BezierCurve.html
 
 Thanks to SteveWeber314 for his fractal tree tutorials
 https://www.thingiverse.com/steveweber314/about
 
-Releasted under GPL v3
+##Licenses##
+Releasted under GPL v3 - Share Alike
+please see the included LICENSE file for the complete license text
+
+##README##
+This library uses psuedo-random bezier curves to generate a 2D vector drawing of a tree.
+There are *many* paramaters that can be adjusted to produce different trees.
+
+To produce a tree simliar to a birch tree (thin, tall, quickly diminishing,  
+and straight) try the following settings:
+`
+trunk(size = 900, bend = 25, seed = 40, depth = 12, widthBottom = 100, widthTop = 90, 
+      maxAngle = 45, minAngle = 35, branchProb = [40, 20, 10], 
+      maxGrowth = .9, minGrowth = .9, decay = .85);
+`
+
+To produce a tree similar to a gnarled old oak (thick, branching horizontally, with
+a bushy crown) try the following settings:
+`
+trunk(size = 600, bend = 150, seed = 40, widthBottom = 300, widthTop = 280, 
+      maxAngle = 75, minAngle = 55, branchProb = [20, 50], 
+      maxGrowth = 1.0, decay = .93, depth = 6);
+`
+
+A reasonable poppler (tall, stright, fast growing and vertical) can be prodced with
+these settings:
+`
+trunk(size = 1500, bend = 100, seed = 40, widthBottom = 300, widthTop = 280, 
+      maxAngle = 15, minAngle = 15, branchProb = [10, 50], 
+      maxGrowth = 1.0, decay = .93, depth = 6);
+`
+
+To produce a tree of a particular dimension use:
+`
+resize([0, 0, 500], auto = true) //resize to a height of 500
+trunk(size = 1500, bend = 100, seed = 40, widthBottom = 300, widthTop = 280, 
+      maxAngle = 15, minAngle = 15, branchProb = [10, 50, 30], 
+      maxGrowth = 1.0, decay = .93, depth = 6);
+`
+
+###Design Considerations###
+To create more bent branches increase the bend/size ratio. size = 500, bend = 250 will 
+make a VERY twisted tree
+
+Setting depth above 9 can result in very long excution times as the recursion grows
+exponentially with depth
 
 
+###Paramaters###
+module trunk()
+paramaters:
+  \* Denotes paramater that is used internally by recursion and is not intended to be
+    used from the inital module call
+  (suggested values in parentheses)
+`
+  size          [real]        size of first segment (linear from origin)
+  seed          [real]        seed with which to generate a psuedo-random tree
+  depth         [integer]     recusion level (1 to 8)
+  widthBottom   [real]        maximum width at base of trunk
+  widthTop      [real]        maximum width at top of first trunk segment
+  minGrowth     [real]        minimum amount to grow the new branch (0.1 to 1.2)
+  maxGrowth     [real]        maximum amount to grow the new branch (0.1 to 1.2)
+  decay         [real]        base amount to diminish each branch by (0.5 to 1.2)
+  minAngle      [real]        minimum angle to rotate each branch (0 to 180)
+  maxAngle      [real]        maximum angle to rotate each branch (0 to 180)
+  branchProb    [vector]      % chance of one, two or three branches occuring
+                              [%one, %two] ([10, 40]) - %three is calculated as the 
+                              remainder of 100-%one-%two. In this case, %50.
+  step          [real]        step size to use when generating bezier curves
+                              values approaching 0 are smoother, but take much longer
+                              to render (0.05)
+  \*depthMax     [integer]     records maximum depth on first call
+  \*distance     [integer]     records distance from "trunk" - can be used to diminish
+                              branches
+  \*start        [vector]      records [x, y, z] vector at which to start 
+  \*first        [boolean]     first run sets persistent variables for recursion
+                              growing the branch
+  debug         [boolean]     turn on debugging including control points
+`
 */
+
+//resize([0, 0, 500], auto = true)
+render(){
+trunk(size = 1500, bend = 101, seed = 40, widthBottom = 300, widthTop = 280, 
+      maxAngle = 15, minAngle = 15, branchProb = [10, 50, 30], 
+      maxGrowth = 1.0, decay = .93, depth = 6);
+}
+
 
 /* 
 calculate a coordinate along a bezier curve
@@ -137,6 +229,7 @@ paramaters:
 
   size          [real]        size of first segment (linear from origin)
   depth         [integer]     recusion level (1 to 8)
+  seed          [real]        seed with which to generate a psuedo-random tree
   widthBottom   [real]        maximum width at base of trunk
   widthTop      [real]        maximum width at top of first trunk segment
   minGrowth     [real]        minimum amount to grow the new branch (0.1 to 1.2)
@@ -157,7 +250,6 @@ paramaters:
 */
 module branch(size, 
              depth,
-             depthMax,
              seed, 
              bend,
              widthBottom, 
@@ -169,6 +261,7 @@ module branch(size,
              maxAngle,
              branchProb,
              step, 
+             depthMax,
              distance, 
              start,
              branchNum,
@@ -227,10 +320,8 @@ module branch(size,
         myDist = (i==0 && distance == 0 )? 0 : distance+1;
         //rotate the starting position by myRot * direction (ccw, cw)
         rotate([0, 0, direction[i]*myRot]) {
-          trunk(first = false, //indicate that this is not the first run
-                size = mySize*decay,  //change size by decay
+          trunk(size = mySize*decay,  //change size by decay
                 depth = depth-1, //decrease depth count
-                depthMax = depthMax, //maintain the maximum depth
                 seed = seed*(i+5)/(i+1), //add some variability in seed
                 bend = bend*decay, //decrease the bend value
                 widthBottom = myWidthTop, //new bottom equals this top
@@ -242,9 +333,11 @@ module branch(size,
                 maxAngle = maxAngle, //maintain maxAngle
                 branchProb = branchProb, //maintain branchProb
                 step = step, //maintain step
+                depthMax = depthMax, //maintain the maximum depth
                 distance = myDist, //pass current distance from trunk 
                 start = tip, //start of new banch is tip of this branch
-                debug = debug
+                debug = debug,
+                first = false //indicate that this is not the first run
                 );
         } //end rotation
       } //end for loop
@@ -261,7 +354,6 @@ paramaters:
     used from the inital module call
   (suggested values in parentheses)
 
-  first         [boolean]     first - run sets persistent variables for recursion
   size          [real]        size of first segment (linear from origin)
   depth         [integer]     recusion level (1 to 8)
   widthBottom   [real]        maximum width at base of trunk
@@ -280,6 +372,7 @@ paramaters:
   *distance     [integer]     records distance from "trunk" - can be used to diminish
                               branches
   *start        [vector]      records [x, y, z] vector at which to start 
+  *first        [boolean]     first run sets persistent variables for recursion
                               growing the branch
   debug         [boolean]     turn on debugging including control points
 
@@ -352,5 +445,5 @@ module willow() {
 //        widthBottom = 300, widthTop = 280, maxGrowth = .9, minGrowth = .8,
 //        maxAngle = 37, minAngle = 35, step = 0.05, first = true);
 
-trunk();
+//trunk();
 
