@@ -178,6 +178,7 @@ module branch(//size, depth, depthMax, bend, seed, widthBottom, widthTop, minGro
   // diminish the branch width by the depth and the distance from the "trunk"
   myWidthTop = widthTop*(depth+1)/(depthMax-2)/(distance+2);
 
+  //draw the current branch
   polyline(bezierPoints, widthBottom, myWidthTop);
 
   
@@ -209,25 +210,53 @@ module branch(//size, depth, depthMax, bend, seed, widthBottom, widthTop, minGro
 
   tip = controlPoints[3];
 
+/*
+             size, 
+             depth,
+             depthMax,
+             seed, 
+             bend,
+             widthBottom, 
+             widthTop, 
+             minGrowth, 
+             maxGrowth, 
+             decay, 
+             minAngle,
+             maxAngle,
+             branchProb,
+             step, 
+             start, 
+             distance 
+
+*/
+
 
   if (depth > 0 && myWidthTop > 10) { //stop if the width gets too small 
     translate(tip) {
       for (i=[0:branchNum-1]) {
+        //select rotation value from the vector
         myRot = i==0 ? rotations[i]/depth : rotations[i];
+        //set the distance from the trunk
         myDist = (i==0 && distance == 0 )? 0 : distance+1;
         //rotate the starting position by myRot * direction (ccw, cw)
         rotate([0, 0, direction[i]*myRot]) {
-          trunk(size = mySize*decay, depth = depth-1, depthMax = depthMax,
-              //bend = bend*decay, 
-              bend = bend*decay,
-              seed = seed*(i+5)/(i+1), widthBottom = myWidthTop, 
-              widthTop = widthTop*decayRands[i], 
-              minGrowth = minGrowth, maxGrowth = maxGrowth, 
-              decay = decay, 
-              maxAngle = maxAngle, minAngle = minAngle, 
-              step = step, start = tip, 
-              distance = myDist,
-              branchProb = branchProb);
+          trunk(size = mySize*decay,  //change size by decay
+                depth = depth-1, //decrease depth count
+                depthMax = depthMax, //maintain the maximum depth
+                seed = seed*(i+5)/(i+1), //add some variability in seed
+                bend = bend*decay, //decrease the bend value
+                widthBottom = myWidthTop, //new bottom equals this top
+                widthTop = widthTop*decayRands[i], //decrease top value 
+                minGrowth = minGrowth, //maintain minGrowth
+                maxGrowth = maxGrowth, //maintain maxGrowth
+                decay = decay, //maintain decay
+                minAngle = minAngle, //maintain minAngle
+                maxAngle = maxAngle, //maintain maxAngle
+                branchProb = branchProb, //maintain branchProb
+                step = step, //maintain step
+                start = tip, //start of new banch is tip of this branch
+                distance = myDist //pass current distance from trunk 
+              );
 
           
         }
