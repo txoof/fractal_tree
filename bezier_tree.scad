@@ -1,3 +1,17 @@
+//Thingiverse Customizer Params
+/* [Tree] */
+//Base Length of Trunk
+size = 500; //[100:1000]
+
+//Depth of recursion
+depth = 5; //[1:6]
+
+
+
+
+trunk(distance = 7, depth = 3);
+
+
 /*
 #2D Fractal Tree Library#
 
@@ -24,6 +38,16 @@ please see the included LICENSE file for the complete license text
 ##README##
 This library uses psuedo-random bezier curves to generate a 2D vector drawing of a tree.
 There are *many* paramaters that can be adjusted to produce different trees.
+
+To use this within another OpenSCAD design try:
+`
+use </Path/To/This/File/bezier_tree.scad>
+
+trunk();
+`
+
+Here are three examples all grown from the same "seed" but with tweaks to the parameters
+to produce three very different trees.
 
 To produce a tree simliar to a birch tree (thin, tall, quickly diminishing,  
 and straight) try the following settings:
@@ -97,13 +121,6 @@ paramaters:
   debug         [boolean]     turn on debugging including control points
 `
 */
-
-//resize([0, 0, 500], auto = true)
-render(){
-trunk(size = 1500, bend = 101, seed = 40, widthBottom = 300, widthTop = 280, 
-      maxAngle = 15, minAngle = 15, branchProb = [10, 50, 30], 
-      maxGrowth = 1.0, decay = .93, depth = 6);
-}
 
 
 /* 
