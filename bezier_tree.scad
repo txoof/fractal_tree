@@ -230,7 +230,8 @@ module branch(size,
         myDist = (i==0 && distance == 0 )? 0 : distance+1;
         //rotate the starting position by myRot * direction (ccw, cw)
         rotate([0, 0, direction[i]*myRot]) {
-          trunk(size = mySize*decay,  //change size by decay
+          trunk(first = false, //indicate that this is not the first run
+                size = mySize*decay,  //change size by decay
                 depth = depth-1, //decrease depth count
                 depthMax = depthMax, //maintain the maximum depth
                 seed = seed*(i+5)/(i+1), //add some variability in seed
@@ -263,8 +264,6 @@ paramaters:
   (suggested values in parentheses)
 
   first         [boolean]     first - run sets persistent variables for recursion
-                              this **MUST** be set to true when the module is called:
-                              trunk(first=true); 
   size          [real]        size of first segment (linear from origin)
   depth         [integer]     recusion level (1 to 8)
   widthBottom   [real]        maximum width at base of trunk
@@ -286,7 +285,7 @@ paramaters:
                               growing the branch
 
 */
-module trunk(first = false,
+module trunk(first = true,
              size = 1000, 
              depth = 6,
              depthMax = 1,
@@ -357,5 +356,5 @@ module willow() {
 //        widthBottom = 300, widthTop = 280, maxGrowth = .9, minGrowth = .8,
 //        maxAngle = 37, minAngle = 35, step = 0.05, first = true);
 
-trunk(first = true);
+trunk();
 
