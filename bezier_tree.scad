@@ -171,12 +171,10 @@ module branch(size,
              step, 
              distance, 
              start,
-             branchNum
+             branchNum,
+             debug
              ) {
 
-
-
-  debug = 0; 
 
   sizemod = rands(minGrowth, maxGrowth, branchNum, seed+1)[0];
 
@@ -195,19 +193,18 @@ module branch(size,
   
 
 
-  /*
-          for (j=[0:len(controlPoints)-1]) {
-            color("red")
-              translate(controlPoints[j])
-              square(30, center = true);
-          }
-  */
 
   if (debug) {
-    translate(controlPoints[3]) {
+    for (j=[0:len(controlPoints)-1]) {
       color("red")
+        translate(controlPoints[j])
+        square(30, center = true);
+    }
+    translate([controlPoints[3][0]+widthBottom/2, controlPoints[3][1]]) {
+      color("blue")
       text(str("seed:", seed,", bn:", branchNum), 
               halign = "left", size = myWidthTop*.5);
+    
     }
   }
 
@@ -246,7 +243,8 @@ module branch(size,
                 branchProb = branchProb, //maintain branchProb
                 step = step, //maintain step
                 distance = myDist, //pass current distance from trunk 
-                start = tip //start of new banch is tip of this branch
+                start = tip, //start of new banch is tip of this branch
+                debug = debug
                 );
         } //end rotation
       } //end for loop
@@ -283,6 +281,7 @@ paramaters:
                               branches
   *start        [vector]      records [x, y, z] vector at which to start 
                               growing the branch
+  debug         [boolean]     turn on debugging including control points
 
 */
 module trunk(first = true,
@@ -301,7 +300,8 @@ module trunk(first = true,
              branchProb = [10, 50, 40],
              step = 0.05, 
              distance = 0, 
-             start = [0, 0, 0]
+             start = [0, 0, 0],
+             debug = false
              ) {
 
 
@@ -336,7 +336,8 @@ module trunk(first = true,
          step = step, 
          distance = distance,
          start = start, 
-         branchNum = branchNum 
+         branchNum = branchNum,
+         debug = debug
          );
 
 }
