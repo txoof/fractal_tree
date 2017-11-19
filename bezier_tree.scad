@@ -142,10 +142,29 @@ paramaters:
   branchNum     [integer]     number of branches to draw
   start         [vector]      x, y, z vector at which to start growing the branch
 */
-module branch(size, depth, depthMax, bend, seed, widthBottom, widthTop, minGrowth, 
-              maxGrowth, decay, minAngle, maxAngle, step, branchNum, branchProb,
-              start, distance) {
-  
+module branch(//size, depth, depthMax, bend, seed, widthBottom, widthTop, minGrowth, 
+              //maxGrowth, decay, minAngle, maxAngle, step, branchNum, branchProb,
+              //start, distance) {
+             size, 
+             depth,
+             depthMax,
+             seed, 
+             bend,
+             widthBottom, 
+             widthTop, 
+             minGrowth, 
+             maxGrowth, 
+             decay, 
+             minAngle,
+             maxAngle,
+             branchProb,
+             step, 
+             start, 
+             distance 
+             ) {
+
+
+
   debug = 0; 
 
   sizemod = rands(minGrowth, maxGrowth, branchNum, seed+1)[0];
