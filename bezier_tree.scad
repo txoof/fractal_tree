@@ -305,26 +305,21 @@ module trunk(first = true,
              ) {
 
 
-  //select the type of branch
-  
-//  one = 10;
-//  two = 50;
+  //set the limits for the probability function 
   brOne = branchProb[0];
   brTwo = branchProb[0]+branchProb[1];
 
+  //select the type of branch
   branchRand = rands(0, 100, 1, seed+5)[0];
-
-
 
   //choose the type of branch
   branchNum = (branchRand < brOne) ? 1 : 
               (brOne < branchRand && branchRand < brTwo) ? 2 : 3;
   
-  
   //check if this is the first run; record the depthMax for use later
   myDepthMax = first==true ? depth : depthMax;
 
-
+  //call branch module
   branch(size = size, 
          depth = depth, 
          depthMax = myDepthMax,
