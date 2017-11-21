@@ -7,9 +7,7 @@ size = 500; //[100:1000]
 depth = 5; //[1:6]
 
 
-
-
-trunk(distance = 7, depth = 3);
+trunk(size = size, distance = 1, depth = depth);
 
 
 /*
@@ -95,7 +93,7 @@ paramaters:
   \* Denotes paramater that is used internally by recursion and is not intended to be
     used from the inital module call
   (suggested values in parentheses)
-`
+
   size          [real]        size of first segment (linear from origin)
   seed          [real]        seed with which to generate a psuedo-random tree
   depth         [integer]     recusion level (1 to 8)
@@ -119,7 +117,7 @@ paramaters:
   \*first        [boolean]     first run sets persistent variables for recursion
                               growing the branch
   debug         [boolean]     turn on debugging including control points
-`
+
 */
 
 
