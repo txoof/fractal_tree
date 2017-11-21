@@ -10,6 +10,7 @@ depth = 5; //[1:6]
 trunk(size = size, distance = 1, depth = depth);
 
 
+
 /*
 #2D Fractal Tree Library#
 
@@ -392,8 +393,7 @@ paramaters:
   debug         [boolean]     turn on debugging including control points
 
 */
-module trunk(first = true,
-             size = 1000, 
+module trunk(size = 1000, 
              depth = 6,
              depthMax = 1,
              seed = 22, 
@@ -409,7 +409,8 @@ module trunk(first = true,
              step = 0.05, 
              distance = 0, 
              start = [0, 0, 0],
-             debug = false
+             first = true,
+	     debug = false
              ) {
 
 
@@ -449,6 +450,78 @@ module trunk(first = true,
          );
 
 }
+
+module help_bezier_tree(modName = false) {
+  //edit content below this line
+
+  //add library name here
+  LibraryName = "bezier_tree";
+
+  //enter module and function information here
+  modules =
+            [["trunk",
+              "module: trunk(size = <real>, depth = <integer>, depthMax = <integer internal>, seed = <real>, bend = <real>, widthBottom = <real>, widthTop = <real> minGrowth = <real>, maxGrowth = <real>, decay = <real>, branchProb = <vector>, step = <real>, distance = <integer internal>, start = <vector internal>, first = <boolean internal>, debug = <boolean>)",
+              "returns: none (module)",
+              "Description: draws psuedo random fractal tree using bezier curved segments",
+              "Paramaters: params marked with 'internal' are used by the recursion and not meant to be called directly.",
+              "   size        <real>              absolute linear length of first segment",
+              "   depth       <integer>           number of recursions; higher values give more complexity",
+              "   depthMax    <integer internal>  records maximum depth for internal calculations; not to be used in initial call",
+              "   seed        <real>              seed for random number generator",
+              "   bend        <real>              maximum deflection for control points along bezier curves",
+              "   widthBottom <real>              width at base of tree",
+              "   widthTop    <real>              width at top of first segment",
+              "   minGrowth   <real>              0.1 <= minGrowth <= 1.2 - minimum percentage to grow each new segment by",
+              "   maxGrowth   <real>              0.1 <= maxGrowth <= 1.2 - maximum percentage to grow each new segment by",
+              "   decay       <real>              rate at which to decrease branch size, bend, length",
+              "   minAngle    <real>              0 <= minAngle <= 180 - minimum angle to vertical of new branches",
+              "   maxAngle    <real>              0 <= maxAngle <= 180 - maximum angle to vertical of new branches",
+              "   branchProb  <vector>            [%one, %two] - percentage chance of choosing one, two or three branches (%three = 100 - %one - %two)",
+              "   step        <real>              0.01 <= step <= 1 - size of steps used in calculating bezier curves; smaller values give smoother curves",
+              "   distance    <integer internal>  distance from trunk for a branch segment; segments further from trunk diminish faster",
+              "   start       <vector internal>   [x, y, z] - location of previous tip; used to draw next branch segment",
+              "   first       <boolean internal>  true for first run, false there after; used to record 'static' persistent values through recursion",
+              "   debug       <boolean>           true to show debug information for each segment"
+	     ],
+
+            ];
+  //End editable content
+  //DO NOT EDIT BELOW THIS POINT
+
+  //convert string into a vector to make search work properly
+  modVect = [modName];
+  //use the vectorized string to search the modules vector
+  index = search(modVect, modules)[0];
+
+  //chcek if a name was passed
+  if (modName==false || len(modules[index])==undef) {
+      if (len(modules[index])==undef && modName != false) {
+        echo(str("*****Module: ", modName, " not found*****"));
+        echo("");
+      }
+
+      echo("Available Help Topics in this Library:");
+      for (i=[0:len(modules)-1]) {
+        echo(modules[i][0]);
+      }
+      echo(str("USE: help_",LibraryName,"(\"moduleName\")  "));
+      //assert(modName);
+    } else {
+      //return the first matching entry
+      //-possibly modify this to return all entries - allows partial match
+
+      echo(str("Help for module or function: ", modName));
+      //basic = modules[index[0]][1];
+      //echo(basic);
+      for (text=[1:len(modules[index])-1]) {
+        echo(modules[index][text]);
+      }
+    }
+}
+
+
+
+
 
 module willow() {
   trunk(size = 500, seed = 58, bend = 250, depth = 5, decay = .8, 
