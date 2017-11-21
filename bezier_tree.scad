@@ -400,17 +400,5 @@ module help_bezier_tree(modName = false) {
 }
 
 
-
-
-module willow() {
-  trunk(size = 500, seed = 58, bend = 250, depth = 5, decay = .8, 
-  widthBottom = 200, widthTop = 75, maxAngle = 130, step = 0.05);
-}
-
-
-//  trunk(size = 1000, seed = 22, bend = 100, depth = 6, decay = .95, 
-//        widthBottom = 300, widthTop = 280, maxGrowth = .9, minGrowth = .8,
-//        maxAngle = 37, minAngle = 35, step = 0.05, first = true);
-
 //trunk();
 
