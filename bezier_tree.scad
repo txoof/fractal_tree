@@ -14,6 +14,14 @@ Releasted under GPL v3
 
 */
 
+
+trunk();
+
+
+
+
+
+
 /* 
 calculate a coordinate along a bezier curve
 paramaters:
@@ -400,5 +408,4 @@ module help_bezier_tree(modName = false) {
 }
 
 
-//trunk();
 
