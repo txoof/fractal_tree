@@ -1,13 +1,68 @@
 //Thingiverse Customizer Params
 /* [Tree] */
 //Base Length of Trunk
-size = 500; //[100:1000]
+size = 800; //[100:1000]
 
 //Depth of recursion
-depth = 5; //[1:6]
+depth = 6; //[2:7]
+
+//Thickness Fudge - use this to decrease thickness on low depth trees
+distance = 1; //[0:15]
+
+//Random Seed to grow Tree From
+seed = 54; //[0:100]
+
+//Maximum bend in each segment
+bend = 180; //[0:500]
+
+//Width at base of tree
+widthBottom = 200; //[10:500]
+
+//Width at top of first segment
+widthTop = 175; //[10:500]
+
+//Minimum Growth ratio for new segments
+minGrowth = 0.8; //[0.5:0.1:1.2]
+
+//Maximum Growth ratio for new segments
+maxGrowth = 0.9; //[0.5:0.1:1.2]
+
+//Decay Rate
+decay = 0.95; //[0.5:0.05:1.2]
+
+//Minimum Angle for new branches
+minAngle = 35; //[10:170]
+
+//Maximum Angle for new branches
+maxAngle = 37; //[10:170]
+
+//Branch Probability - chance of choosing a one, two or three branch joint (must add up to 100!)
+oneBranch = 10; //[0:100]
+twoBranch = 50; //[0:100]
+threeBranch = 40; //[0:100]
+
+//Step size for Bezier Curves - smaller yields smoother curves
+step = 0.05; //[0.03:0.01:0.1]
 
 
-trunk(size = size, distance = 1, depth = depth);
+/*[Hidden]*/
+branchProb = [oneBranch, twoBranch, 100-oneBranch-twoBranch];
+
+trunk(size = size, 
+      distance = distance, 
+      depth = depth,
+      seed = seed,
+      bend = bend,
+      widthBottom = widthBottom,
+      widthTop = widthTop,
+      minGrowth = minGrowth,
+      maxGrowth = maxGrowth,
+      decay = decay,
+      minAngle = minAngle,
+      maxAngle = maxAngle,
+      branchProb = branchProb,
+      step = step
+      );
 
 
 
@@ -478,7 +533,7 @@ module help_bezier_tree(modName = false) {
               "   maxAngle    <real>              0 <= maxAngle <= 180 - maximum angle to vertical of new branches",
               "   branchProb  <vector>            [%one, %two] - percentage chance of choosing one, two or three branches (%three = 100 - %one - %two)",
               "   step        <real>              0.01 <= step <= 1 - size of steps used in calculating bezier curves; smaller values give smoother curves",
-              "   distance    <integer internal>  distance from trunk for a branch segment; segments further from trunk diminish faster",
+              "   distance    <integer internal>  distance from trunk for a branch segment; segments further from trunk diminish faster; use values > 3 for trees with depth < 5",
               "   start       <vector internal>   [x, y, z] - location of previous tip; used to draw next branch segment",
               "   first       <boolean internal>  true for first run, false there after; used to record 'static' persistent values through recursion",
               "   debug       <boolean>           true to show debug information for each segment"
