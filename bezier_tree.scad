@@ -48,7 +48,6 @@ step = 0.05; //[0.03:0.01:0.1]
 /*[Hidden]*/
 branchProb = [oneBranch, twoBranch, 100-oneBranch-twoBranch];
 
-/*
 trunk(size = size, 
       distance = distance, 
       depth = depth,
@@ -64,9 +63,6 @@ trunk(size = size,
       branchProb = branchProb,
       step = step
       );
-*/
-color("brown")
-trunk();
 
 
 /*
